@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import datetime
 import random
-import from money import Money, Currency
+from money import Money
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -52,9 +52,47 @@ def number_generator():
            (four_digit_num not in exist_pin_num):
             print("This is your New Account Number:", nine_digit_num)
             print("This is your New PIN Number:", four_digit_num)
-            print("\nPlease write down your Account & Pin details as you \
-            will need them to access your Account in Login.")
+            print("\nPlease write down your Account & Pin details as you will need them to access your Account in Login.")
             break
+
+def acc_create_confirm(first_name, last_name, date_of_birth):
+    """
+    Allows the user to confirm their First & Last name
+    and their DOB. Giving the user the option to return if
+    they made a mistake.
+    """
+
+    print("Here are your entered details:")
+    print(f"First Name: {first_name}")
+    print(f"Last Name: {last_name}")
+    print(f"Date of Birth: {date_of_birth}")
+
+    print("\nAre these details correct? Please Answer Yes or No\n")
+    while True:
+        crte_conf_str = input("Enter here:\n")
+        # Calls Confirm Validation to check for correct input string
+        if validate_confirm(crte_conf_str):
+            if crte_conf_str == "Yes":
+                print(f"Thank you {first_name} for your confirmation.\n")
+                print("Creating your new Account with Eternity Holdings.\n")
+                number_generator()
+
+            elif crte_conf_str == "No":
+                print("No problem. Returning to Account Creation.")
+                create_account()
+
+            break 
+
+def validate_confirm(crte_conf_str):
+    """
+    Checks if the user input in crte_conf_str is Valid.
+    """
+    # Checks if string equals to the respective two values
+    if crte_conf_str == "Yes" or crte_conf_str == "No":
+        return True
+    else:
+        print(f"Wrong User input of '{crte_conf_str}' detected, this is incorrect. Please try again.")
+        return False
 
 def create_account():
     """
@@ -65,10 +103,8 @@ def create_account():
     print("Welcome to the Account Creation Terminal.\n")
 
     first_name = input("Please Enter First Name:\n")
-    print(f"Your name is {first_name}\n")
 
     last_name = input("Please Enter Last Name:\n")
-    print(f"Your last name is {last_name}\n")
 
     print("NOTICE: You must be 18+ to Create an Account\n")
 
@@ -76,7 +112,8 @@ def create_account():
         date_of_birth = input("Please Enter Date of Birth in the format (YYYY-MM-DD):\n") 
         # Calls Date of Birth Validation function
         if validate_dob(date_of_birth):
-            print(f"Thank you {first_name,last_name}. Creating your new Account with Eternity Holdings.\n")
+            #print(f"Thank you {first_name}. Creating your new Account with Eternity Holdings.\n")
+            acc_create_confirm(first_name, last_name, date_of_birth)
             break
         else:
             print("Please Try Again.\n")
@@ -156,7 +193,7 @@ def main():
     Run all program functions.
     """
     login_or_create()
-    number_generator()
+    starting_bal = Money(amount ='0.00', currency ='EUR')
 
 print("Welcome to Eternity Holdings the #1 App to automate your banking needs!\n")
 main()
