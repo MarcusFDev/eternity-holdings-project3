@@ -17,10 +17,32 @@ SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
 accountlist = SHEET.worksheet('accountlist')
 
+def update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four_digit_num, starting_bal, worksheet):
+    """
+    Updates Google Sheet with user Inputed data.
+    -Creates list of data to send to sheet.
+    -Converts starting_bal value to a string.
+    """
+    # Converts values to shorter & approriate value names
+    fname = first_name
+    lname = last_name
+    bdate = date_of_birth
+    acc_num = nine_digit_num
+    pin_num = four_digit_num
+    # Converts Money value to string
+    starting_balance = str(starting_bal)
+    # Grabs the worksheet to send data to
+    worksheet_to_update = SHEET.worksheet('accountlist')
+    # Creates a list for the Values
+    row_data = [fname, lname, bdate, acc_num, pin_num, starting_balance]
+    # Updates worksheet with the new data
+    worksheet_to_update.append_row(row_data)
+
 def get_account_and_pin(column_index):
     """
     Checks the Account and Pin numbers
-    found in Google sheet.
+    values found in Google sheet. Converts
+    those values into integers.
     """
     account_list_sheet = SHEET.worksheet('accountlist')
 
@@ -30,12 +52,13 @@ def get_account_and_pin(column_index):
     # Returns the column data to integers & removes empty values
     return [int(value) for value in column_values if value]
 
-def number_generator():
+def number_generator(first_name, last_name, date_of_birth):
     """
     Generates random 4 and 9 digit number.
     Calls get_account_and_pin function to collect
     data from Google Sheet. Checks generated numbers with
-    sheet data to prevent duplicate number values.
+    sheet data to prevent duplicates, generates Account balance
+    & Calls update_sheet function.
     """
     # Collects Sheet Data from Columns 4 to 5 respectively
     exist_acc_num = get_account_and_pin(4)
@@ -50,9 +73,16 @@ def number_generator():
         # Checks if generated num already exists in Google sheet
         if (nine_digit_num not in exist_acc_num) and \
            (four_digit_num not in exist_pin_num):
-            print("This is your New Account Number:", nine_digit_num)
-            print("This is your New PIN Number:", four_digit_num)
-            print("\nPlease write down your Account & Pin details as you will need them to access your Account in Login.")
+            print("These are your Account details:\n")
+            print(f"First Name: {first_name}")
+            print(f"Last Name: {last_name}")
+            print(f"Date of Birth: {date_of_birth}")
+            print("\nYour New Account Number:", nine_digit_num)
+            print("Your New Account PIN Number:", four_digit_num)
+            print("\nPlease take note of these details as you will need them to access your Account in Login.")
+
+            starting_bal = Money(amount ='0.00', currency ='EUR')
+            update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four_digit_num, starting_bal, 'accountlist')
             break
 
 def acc_create_confirm(first_name, last_name, date_of_birth):
@@ -62,12 +92,12 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
     they made a mistake.
     """
 
-    print("Here are your entered details:")
+    print("\nHere are your entered details:")
     print(f"First Name: {first_name}")
     print(f"Last Name: {last_name}")
     print(f"Date of Birth: {date_of_birth}")
 
-    print("\nAre these details correct? Please Answer Yes or No\n")
+    print("\nAre these details correct? Please Confirm Yes or No")
     while True:
         crte_conf_str = input("Enter here:\n")
         # Calls Confirm Validation to check for correct input string
@@ -75,7 +105,7 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
             if crte_conf_str == "Yes":
                 print(f"Thank you {first_name} for your confirmation.\n")
                 print("Creating your new Account with Eternity Holdings.\n")
-                number_generator()
+                number_generator(first_name, last_name, date_of_birth)
 
             elif crte_conf_str == "No":
                 print("No problem. Returning to Account Creation.")
@@ -193,7 +223,7 @@ def main():
     Run all program functions.
     """
     login_or_create()
-    starting_bal = Money(amount ='0.00', currency ='EUR')
+    
 
 print("Welcome to Eternity Holdings the #1 App to automate your banking needs!\n")
 main()
