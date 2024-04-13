@@ -60,8 +60,8 @@ def number_generator(first_name, last_name, date_of_birth):
     sheet data to prevent duplicates, generates Account balance
     & Calls update_sheet function.
     """
-    # Collects Sheet Data from Columns 4 to 5 respectively
-    exist_acc_num = get_account_and_pin(4)
+    # Collects Sheet Data from Columns 3 and 5 respectively
+    exist_acc_num = get_account_and_pin(3)
     exist_pin_num = get_account_and_pin(5)
 
     while True:
@@ -175,12 +175,61 @@ def validate_dob(date_of_birth):
         print(f"Sorry, your date input '{date_of_birth}' was incorrectly formatted.")
         return False
 
+def logged_in_menu():
+    """
+    The Eternity Bank's main HUB
+    """
+    print("You are now at the Eternity Bank HUB.")
 
 def login_account():
     """
-    Begins the Account login process.
+    Collects User input for their Account.
+    In the if statement it calls the locate_acc function,
+    to compare user input with stored data. 
+
+    -If True the loop breaks and calls logged_in_menu.
+    -If False it returns user to the start.
     """
     print("Sending to Account Login...\n")
+
+    while True:
+        # Assigns a variable to each user input
+        fname = input("Please Enter First Name:\n")
+        lname = input("Please Enter Last Name:\n")
+        acc_num = input("Please Enter Account Number:\n")
+        pin_num = input("Please Enter the Account Pin number:\n")
+
+        # Calls function and gives it the input values
+        if locate_acc(fname, lname, acc_num, pin_num):
+            print("You have Successfully logged in.\n")
+            print(f"Welcome {fname}. we're happy to see you!")
+            logged_in_menu()
+            break
+        else:
+            print("Sorry your search does not match any Account in our database.\n")
+            login_or_create()
+
+def locate_acc(fname, lname, acc_num, pin_num):
+    """
+    Extracts coresponding data from worksheet.
+    Creates a list of the data. Compares the data,
+    with user input.
+    -If the values match, returns True.
+    -If not, returns False.
+    """
+    account_list_sheet = SHEET.worksheet('accountlist')
+    # Collects all row data
+    all_rows = account_list_sheet.get_all_values()
+    # Iterate over each row in the sheet excluding the title row
+    for row in all_rows[1:]:
+        # Extract each data from the row in order
+        sheet_fname, sheet_lname, sheet_acc_num, sheet_pin_num = row[:4]
+
+        # Check if all the user input matches the data in the sheet
+        if fname == sheet_fname and lname == sheet_lname and acc_num == sheet_acc_num and pin_num == sheet_pin_num:
+            return True
+        
+    return False
 
 def login_or_create():
     """
