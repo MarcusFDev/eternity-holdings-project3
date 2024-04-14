@@ -34,7 +34,7 @@ def update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four
     # Grabs the worksheet to send data to
     worksheet_to_update = SHEET.worksheet('accountlist')
     # Creates a list for the Values
-    row_data = [fname, lname, bdate, acc_num, pin_num, starting_balance]
+    row_data = [fname, lname, acc_num, pin_num, bdate, starting_balance]
     # Updates worksheet with the new data
     worksheet_to_update.append_row(row_data)
 
@@ -60,8 +60,8 @@ def number_generator(first_name, last_name, date_of_birth):
     sheet data to prevent duplicates, generates Account balance
     & Calls update_sheet function.
     """
-    # Collects Sheet Data from Columns 3 and 5 respectively
-    exist_acc_num = get_account_and_pin(3)
+    # Collects Sheet Data from Columns 4 and 5 respectively
+    exist_acc_num = get_account_and_pin(4)
     exist_pin_num = get_account_and_pin(5)
 
     while True:
@@ -175,11 +175,46 @@ def validate_dob(date_of_birth):
         print(f"Sorry, your date input '{date_of_birth}' was incorrectly formatted.")
         return False
 
-def logged_in_menu():
+def acc_depo_term():
+    print("Welcome to Eternity Holdings deposit terminal")
+
+def acc_withdraw_term():
+    print("Welcome to Eternity Holdings withdraw terminal")
+
+def acc_logout_term():
+    print("Remember to spend Responsibly & Have an amazing day.")
+
+def logged_in_hub(fname):
     """
-    The Eternity Bank's main HUB
+    The Eternity Holding's main HUB
     """
-    print("You are now at the Eternity Bank HUB.")
+    print(f"Welcome {fname} you are now at the Eternity Bank HUB.\n")
+    print("From here you have access to all our services. See below for our current available options:\n")
+
+    print("Enter 'Deposit' to go to the Deposit funds terminal.")
+    print("Enter 'Withdraw' to go to the Withdraw funds terminal.")
+    print("Enter 'Logout' to go back to the Main Menu.\n")
+
+    valid_mode_input = ["Deposit", "Withdraw", "Logout"]
+
+    while True:
+        mode_str = input("Enter here:\n")
+
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "Deposit":
+                print("Going to the Deposit terminal!")
+                acc_depo_term()
+                
+            elif mode_str == "Withdraw":
+                print("Going to the Withdraw terminal!")
+                acc_withdraw_term()
+                
+            elif mode_str == "Logout":
+                print(f"Thank you {fname} for using Eternity Holding. You are safely being logged out.")
+                acc_logout_term()
+                
+            else:
+                print(f"The Input of {mode_str} is")
 
 def login_account():
     """
@@ -202,8 +237,7 @@ def login_account():
         # Calls function and gives it the input values
         if locate_acc(fname, lname, acc_num, pin_num):
             print("You have Successfully logged in.\n")
-            print(f"Welcome {fname}. we're happy to see you!")
-            logged_in_menu()
+            logged_in_hub(fname)
             break
         else:
             print("Sorry your search does not match any Account in our database.\n")
@@ -242,10 +276,12 @@ def login_or_create():
     print("To proceed with your banking experience, please choose 'Create' or 'Login'")
     print("Insert the values exactly as shown above.\n")
 
+    valid_mode_input = ["Create", "Login"]
+
     while True:
         mode_str = input("Enter here:\n")
         # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str):
+        if validate_mode(mode_str, valid_mode_input):
             if mode_str == "Create":
                 print(f"You chose to {mode_str} an Account!")
                 print("Sending to Account Creation...\n")
@@ -256,12 +292,15 @@ def login_or_create():
 
             break 
 
-def validate_mode(mode_str):
+def validate_mode(mode_str, valid_mode_input):
     """
-    Checks if the user input in mode_str is Valid.
+    Checks if the value of mode_str is found in
+    the valid_modes list.
+    -If the value is found, it returns True.
+    -If the value is not, it prints a statement and returns False.
     """
-    # Checks if string equals to the respective two values
-    if mode_str == "Create" or mode_str == "Login":
+    # Checks if string equals to the respective values
+    if mode_str in valid_mode_input:
         return True
     else:
         print(f"Wrong User input of '{mode_str}' detected, this is incorrect. Please try again.")
