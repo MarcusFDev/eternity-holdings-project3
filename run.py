@@ -60,9 +60,9 @@ def number_generator(first_name, last_name, date_of_birth):
     sheet data to prevent duplicates, generates Account balance
     & Calls update_sheet function.
     """
-    # Collects Sheet Data from Columns 4 and 5 respectively
-    exist_acc_num = get_account_and_pin(4)
-    exist_pin_num = get_account_and_pin(5)
+    # Collects Sheet Data from Columns 3 and 4 respectively
+    exist_acc_num = get_account_and_pin(3)
+    exist_pin_num = get_account_and_pin(4)
 
     while True:
         # Generates a random 9 digit number.
@@ -98,31 +98,23 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
     print(f"Date of Birth: {date_of_birth}")
 
     print("\nAre these details correct? Please Confirm Yes or No")
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["Yes", "No"]
+
     while True:
-        crte_conf_str = input("Enter here:\n")
-        # Calls Confirm Validation to check for correct input string
-        if validate_confirm(crte_conf_str):
-            if crte_conf_str == "Yes":
+        mode_str = input("Enter here:\n")
+        # Calls validate_mode to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "Yes":
                 print(f"Thank you {first_name} for your confirmation.\n")
                 print("Creating your new Account with Eternity Holdings.\n")
                 number_generator(first_name, last_name, date_of_birth)
 
-            elif crte_conf_str == "No":
+            elif mode_str == "No":
                 print("No problem. Returning to Account Creation.")
                 create_account()
 
             break 
-
-def validate_confirm(crte_conf_str):
-    """
-    Checks if the user input in crte_conf_str is Valid.
-    """
-    # Checks if string equals to the respective two values
-    if crte_conf_str == "Yes" or crte_conf_str == "No":
-        return True
-    else:
-        print(f"Wrong User input of '{crte_conf_str}' detected, this is incorrect. Please try again.")
-        return False
 
 def create_account():
     """
@@ -147,7 +139,6 @@ def create_account():
             break
         else:
             print("Please Try Again.\n")
-            
 
 def validate_dob(date_of_birth):
     """
@@ -194,7 +185,7 @@ def logged_in_hub(fname):
     print("Enter 'Deposit' to go to the Deposit funds terminal.")
     print("Enter 'Withdraw' to go to the Withdraw funds terminal.")
     print("Enter 'Logout' to go back to the Main Menu.\n")
-
+    # Creates a list of expected strings for validate function
     valid_mode_input = ["Deposit", "Withdraw", "Logout"]
 
     while True:
@@ -275,7 +266,7 @@ def login_or_create():
     print("You're now at the Create & Login Terminal\n")
     print("To proceed with your banking experience, please choose 'Create' or 'Login'")
     print("Insert the values exactly as shown above.\n")
-
+    # Creates a list of expected strings for validate function
     valid_mode_input = ["Create", "Login"]
 
     while True:
