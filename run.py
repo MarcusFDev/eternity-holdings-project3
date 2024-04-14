@@ -166,14 +166,19 @@ def validate_dob(date_of_birth):
         print(f"Sorry, your date input '{date_of_birth}' was incorrectly formatted.")
         return False
 
-def acc_depo_term():
+def acc_depo_term(fname):
     print("Welcome to Eternity Holdings deposit terminal")
+    print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
+    logged_in_hub(fname)
 
-def acc_withdraw_term():
+def acc_withdraw_term(fname):
     print("Welcome to Eternity Holdings withdraw terminal")
+    print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
+    logged_in_hub(fname)
 
-def acc_logout_term():
-    print("Remember to spend Responsibly & Have an amazing day.")
+def acc_logout_term(fname):
+    print("Remember to spend Responsibly & Have an amazing day.\n")
+    login_or_create()
 
 def logged_in_hub(fname):
     """
@@ -193,16 +198,16 @@ def logged_in_hub(fname):
 
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "Deposit":
-                print("Going to the Deposit terminal!")
-                acc_depo_term()
+                print("Going to the Deposit terminal!\n")
+                acc_depo_term(fname)
                 
             elif mode_str == "Withdraw":
-                print("Going to the Withdraw terminal!")
-                acc_withdraw_term()
+                print("Going to the Withdraw terminal!\n")
+                acc_withdraw_term(fname)
                 
             elif mode_str == "Logout":
-                print(f"Thank you {fname} for using Eternity Holding. You are safely being logged out.")
-                acc_logout_term()
+                print(f"Thank you {fname} for using Eternity Holding. You are safely being logged out.\n")
+                acc_logout_term(fname)
                 
             else:
                 print(f"The Input of {mode_str} is")
