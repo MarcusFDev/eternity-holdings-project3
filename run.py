@@ -1,9 +1,21 @@
+"""
+This is the Eternity Holdings functionality file, run.py.
+Contains but not limited to functions that:
+
+-Allows Users to Create a account.
+-Accesses and can edit Google Sheets as a database.
+-Allows Users to Login to an account they created.
+-Users can Log Out of an account.
+-Allows users to Deposit & Withdraw funds into their account.
+"""
+
 import os
 import datetime
 import random
+from money import Money
+
 import gspread
 from google.oauth2.service_account import Credentials
-from money import Money
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -16,7 +28,7 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
-accountlist = SHEET.worksheet('accountlist')
+ACCOUNTLIST = SHEET.worksheet('accountlist')
 
 
 def update_sheet_data(first_name,
@@ -412,6 +424,7 @@ def main():
     login_or_create()
 
 
-print("\nEternity Holdings the #1 App"
-      " to automate your banking needs!\n")
-main()
+if __name__ == "__main__":
+    print("\nEternity Holdings the #1 App"
+          " to automate your banking needs!\n")
+    main()
