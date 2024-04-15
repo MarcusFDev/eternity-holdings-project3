@@ -1,7 +1,8 @@
-import gspread
-from google.oauth2.service_account import Credentials
+import os
 import datetime
 import random
+import gspread
+from google.oauth2.service_account import Credentials
 from money import Money
 
 SCOPE = [
@@ -17,7 +18,14 @@ SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
 accountlist = SHEET.worksheet('accountlist')
 
-def update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four_digit_num, starting_bal, worksheet):
+
+def update_sheet_data(first_name,
+                      last_name,
+                      date_of_birth,
+                      nine_digit_num,
+                      four_digit_num,
+                      starting_bal,
+                      worksheet):
     """
     Updates Google Sheet with user Inputed data.
     -Creates list of data to send to sheet.
@@ -38,6 +46,15 @@ def update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four
     # Updates worksheet with the new data
     worksheet_to_update.append_row(row_data)
 
+
+def clear():
+    """
+    Clear function to clean-up the terminal window so the User has
+    a better visual on the terminal content that is most relevant.
+    """
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 def get_account_and_pin(column_index):
     """
     Checks the Account and Pin numbers
@@ -51,6 +68,7 @@ def get_account_and_pin(column_index):
     column_values = column_values[1:]
     # Returns the column data to integers & removes empty values
     return [int(value) for value in column_values if value]
+
 
 def number_generator(first_name, last_name, date_of_birth):
     """
@@ -66,24 +84,47 @@ def number_generator(first_name, last_name, date_of_birth):
 
     while True:
         # Generates a random 9 digit number.
-        nine_digit_num = random.randint(100000000,999999999)
+        nine_digit_num = random.randint(100000000, 999999999)
         # Generates a random 4 digit number.
-        four_digit_num = random.randint(1000,9999)
+        four_digit_num = random.randint(1000, 9999)
 
         # Checks if generated num already exists in Google sheet
         if (nine_digit_num not in exist_acc_num) and \
            (four_digit_num not in exist_pin_num):
+            print("Creating your new Account with Eternity Holdings...")
             print("These are your Account details:\n")
             print(f"First Name: {first_name}")
             print(f"Last Name: {last_name}")
             print(f"Date of Birth: {date_of_birth}")
             print("\nYour New Account Number:", nine_digit_num)
             print("Your New Account PIN Number:", four_digit_num)
-            print("\nPlease take note of these details as you will need them to access your Account in Login.")
+            print("\nPlease take note of these details as you will"
+                  " need them to access your Account in Login.")
 
-            starting_bal = Money(amount ='0.00', currency ='EUR')
-            update_sheet_data(first_name, last_name, date_of_birth, nine_digit_num, four_digit_num, starting_bal, 'accountlist')
+            starting_bal = Money(amount='0.00', currency='EUR')
+            update_sheet_data(first_name, last_name, date_of_birth,
+                              nine_digit_num, four_digit_num,
+                              starting_bal, 'accountlist')
             break
+
+
+def acc_create_finished():
+    """
+    After the Account details are printed to the terminal
+    """
+    print("When you're ready,"
+          " Please enter 'PROCEED' to return to the Main Menu.\n")
+    valid_mode_input = ["PROCEED"]
+
+    while True:
+        mode_str = input("Enter here:\n")
+        # Calls validate_mode to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "PROCEED":
+                print("Returning to Main Menu...")
+                clear()
+                login_or_create()
+
 
 def acc_create_confirm(first_name, last_name, date_of_birth):
     """
@@ -106,15 +147,18 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "Yes":
+                clear()
                 print(f"Thank you {first_name} for your confirmation.\n")
-                print("Creating your new Account with Eternity Holdings.\n")
                 number_generator(first_name, last_name, date_of_birth)
+                acc_create_finished()
 
             elif mode_str == "No":
-                print("No problem. Returning to Account Creation.")
+                clear()
+                print("No problem. Lets go back...")
                 create_account()
 
-            break 
+            break
+
 
 def create_account():
     """
@@ -131,61 +175,96 @@ def create_account():
     print("NOTICE: You must be 18+ to Create an Account\n")
 
     while True:
-        date_of_birth = input("Please Enter Date of Birth in the format (YYYY-MM-DD):\n") 
+        date_of_birth = input("Please Enter Date of Birth in the format"
+                              "(YYYY-MM-DD):\n")
         # Calls Date of Birth Validation function
-        if validate_dob(date_of_birth):
-            #print(f"Thank you {first_name}. Creating your new Account with Eternity Holdings.\n")
+        if validate_dob(date_of_birth, first_name):
+            clear()
             acc_create_confirm(first_name, last_name, date_of_birth)
             break
         else:
             print("Please Try Again.\n")
 
-def validate_dob(date_of_birth):
+
+def validate_dob(date_of_birth, first_name):
     """
     Validates user input for date.
     Checks user input to be over the Age of 18,
     -If the input is Valid and over 18 code returns true value.
     -If the input is Valid but under 18 code returns to start.
-    -If the input is inValid, returns false value. 
+    -If the input is inValid, returns false value.
     """
     try:
         # Formats User Date Input
-        birth_date = datetime.datetime.strptime(date_of_birth, "%Y-%m-%d").date()
+        birth_date = datetime.datetime.strptime(date_of_birth,
+                                                "%Y-%m-%d").date()
         # Collects Current Date
         current_date = datetime.date.today()
         # Calculates Age by subtracting User Input with Current Date
-        age = current_date.year - birth_date.year - ((current_date.month, current_date.day) < (birth_date.month, birth_date.day))
+        age = current_date.year - birth_date.year - (
+            (current_date.month, current_date.day) <
+            (birth_date.month, birth_date.day))
         # Checks if Age is greater or equal to 18
         if age >= 18:
             return True
         else:
-            print("Sorry, you must be 18 or older to create an account with us.\n")
+            clear()
+            print(f"Sorry {first_name}, you must be 18 or older"
+                  " to create an account with us.\n")
             login_or_create()
 
     except ValueError:
-        print(f"Sorry, your date input '{date_of_birth}' was incorrectly formatted.")
+        clear()
+        print(f"Sorry, your date input '{date_of_birth}'"
+              " was incorrectly formatted.")
         return False
 
+
 def acc_depo_term(fname):
+    clear()
     print("Welcome to Eternity Holdings deposit terminal")
     print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
     logged_in_hub(fname)
 
+
 def acc_withdraw_term(fname):
+    clear()
     print("Welcome to Eternity Holdings withdraw terminal")
     print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
     logged_in_hub(fname)
 
-def acc_logout_term(fname):
-    print("Remember to spend Responsibly & Have an amazing day.\n")
-    login_or_create()
+
+def acc_logout_confirm(fname):
+    """
+    Allows the user to return if they
+    did not want to logout
+    """
+    print(f"{fname} are you sure you want to Log Out?\n")
+    print("Please Enter 'Yes' or 'No'")
+    valid_mode_input = ["YES", "NO"]
+
+    while True:
+        mode_str = input("Enter here:\n")
+        # Calls validate_mode to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "YES":
+                clear()
+                print("You are safely being logged out.")
+                print("Remember to spend Responsibly & Have an amazing day.\n")
+                login_or_create()
+            elif mode_str == "NO":
+                clear()
+                print("Returning back...\n")
+                logged_in_hub(fname)
+
 
 def logged_in_hub(fname):
     """
     The Eternity Holding's main HUB
     """
-    print(f"Welcome {fname} you are now at the Eternity Bank HUB.\n")
-    print("From here you have access to all our services. See below for our current available options:\n")
+    print(f"Welcome {fname} you are now at the Eternity Bank HUB.")
+    print("From here you have access to all our services."
+          " See below for our current available options:\n")
 
     print("Enter 'Deposit' to go to the Deposit funds terminal.")
     print("Enter 'Withdraw' to go to the Withdraw funds terminal.")
@@ -198,30 +277,33 @@ def logged_in_hub(fname):
 
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "Deposit":
+                clear()
                 print("Going to the Deposit terminal!\n")
                 acc_depo_term(fname)
-                
+
             elif mode_str == "Withdraw":
+                clear()
                 print("Going to the Withdraw terminal!\n")
                 acc_withdraw_term(fname)
-                
+
             elif mode_str == "Logout":
-                print(f"Thank you {fname} for using Eternity Holding. You are safely being logged out.\n")
-                acc_logout_term(fname)
-                
+                clear()
+                acc_logout_confirm(fname)
+
             else:
-                print(f"The Input of {mode_str} is")
+                print(f"The Input of {mode_str} is incorrect.")
+
 
 def login_account():
     """
     Collects User input for their Account.
     In the if statement it calls the locate_acc function,
-    to compare user input with stored data. 
+    to compare user input with stored data.
 
     -If True the loop breaks and calls logged_in_menu.
     -If False it returns user to the start.
     """
-    print("Sending to Account Login...\n")
+    print("Welcome to the Account Login Terminal.\n")
 
     while True:
         # Assigns a variable to each user input
@@ -232,20 +314,25 @@ def login_account():
 
         # Calls function and gives it the input values
         if locate_acc(fname, lname, acc_num, pin_num):
+            clear()
             print("You have Successfully logged in.\n")
             logged_in_hub(fname)
             break
         else:
-            print("Sorry your search does not match any Account in our database.\n")
+            clear()
+            print("Sorry your search does not match"
+                  " any Account in our database.")
+            print("Returning to Main menu...\n")
             login_or_create()
+
 
 def locate_acc(fname, lname, acc_num, pin_num):
     """
-    Extracts coresponding data from worksheet.
+    Extracts corresponding data from worksheet.
     Creates a list of the data. Compares the data,
     with user input.
-    -If the values match, returns True.
-    -If not, returns False.
+    - If the values match, returns True.
+    - If not, returns False.
     """
     account_list_sheet = SHEET.worksheet('accountlist')
     # Collects all row data
@@ -256,10 +343,17 @@ def locate_acc(fname, lname, acc_num, pin_num):
         sheet_fname, sheet_lname, sheet_acc_num, sheet_pin_num = row[:4]
 
         # Check if all the user input matches the data in the sheet
-        if fname == sheet_fname and lname == sheet_lname and acc_num == sheet_acc_num and pin_num == sheet_pin_num:
+        if (
+            fname == sheet_fname and
+            lname == sheet_lname and
+            acc_num == sheet_acc_num and
+            pin_num == sheet_pin_num
+        ):
+
             return True
-        
+
     return False
+
 
 def login_or_create():
     """
@@ -268,8 +362,10 @@ def login_or_create():
     via the terminal, which must be the correct value of
     'Create' or 'Login'. The loop will repeat until input is valid.
     """
-    print("You're now at the Create & Login Terminal\n")
-    print("To proceed with your banking experience, please choose 'Create' or 'Login'")
+    print("Welcome to the Main Menu.")
+    print("You're now at the Create & Login Terminal.\n")
+    print("To proceed with your banking experience,"
+          " please choose 'Create' or 'Login'.")
     print("Insert the values exactly as shown above.\n")
     # Creates a list of expected strings for validate function
     valid_mode_input = ["Create", "Login"]
@@ -279,14 +375,19 @@ def login_or_create():
         # Calls Mode Validation to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "Create":
+                clear()
                 print(f"You chose to {mode_str} an Account!")
                 print("Sending to Account Creation...\n")
                 create_account()
+
             elif mode_str == "Login":
+                clear()
                 print(f"You chose to {mode_str} to an Account!")
+                print("Sending to Account Login...\n")
                 login_account()
 
-            break 
+            break
+
 
 def validate_mode(mode_str, valid_mode_input):
     """
@@ -299,15 +400,18 @@ def validate_mode(mode_str, valid_mode_input):
     if mode_str in valid_mode_input:
         return True
     else:
-        print(f"Wrong User input of '{mode_str}' detected, this is incorrect. Please try again.")
+        print(f"Wrong User input of '{mode_str}' detected,"
+              "this is incorrect. Please try again.")
         return False
+
 
 def main():
     """
     Run all program functions.
     """
     login_or_create()
-    
 
-print("Welcome to Eternity Holdings the #1 App to automate your banking needs!\n")
+
+print("\nEternity Holdings the #1 App"
+      " to automate your banking needs!\n")
 main()
