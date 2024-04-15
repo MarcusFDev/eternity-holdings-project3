@@ -9,6 +9,7 @@ Contains but not limited to functions that:
 -Allows users to Deposit & Withdraw funds into their account.
 """
 
+from colorama import init, Fore, Style
 import os
 import datetime
 import random
@@ -29,6 +30,9 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
 ACCOUNTLIST = SHEET.worksheet('accountlist')
+
+# Initialize Colorama to work with ANSI escape sequences
+init()
 
 
 def update_sheet_data(first_name,
@@ -103,15 +107,17 @@ def number_generator(first_name, last_name, date_of_birth):
         # Checks if generated num already exists in Google sheet
         if (nine_digit_num not in exist_acc_num) and \
            (four_digit_num not in exist_pin_num):
-            print("Creating your new Account with Eternity Holdings...")
-            print("These are your Account details:\n")
-            print(f"First Name: {first_name}")
+            print(Fore.GREEN + "Creating your new Account"
+                               " with Eternity Holdings...")
+            print(Fore.YELLOW + "These are your Account details:\n")
+            print(Style.RESET_ALL + f"First Name: {first_name}")
             print(f"Last Name: {last_name}")
             print(f"Date of Birth: {date_of_birth}")
             print("\nYour New Account Number:", nine_digit_num)
             print("Your New Account PIN Number:", four_digit_num)
-            print("\nPlease take note of these details as you will"
-                  " need them to access your Account in Login.")
+            print(Fore.RED + "\nPlease take note of these details as"
+                             " you will need them to access your Account"
+                             " in Login.")
 
             starting_bal = Money(amount='0.00', currency='EUR')
             update_sheet_data(first_name, last_name, date_of_birth,
@@ -124,16 +130,16 @@ def acc_create_finished():
     """
     After the Account details are printed to the terminal
     """
-    print("When you're ready,"
+    print(Fore.YELLOW + "When you're ready,"
           " Please enter 'PROCEED' to return to the Main Menu.\n")
     valid_mode_input = ["PROCEED"]
 
     while True:
-        mode_str = input("Enter here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "PROCEED":
-                print("Returning to Main Menu...")
+                print(Fore.GREEN + "Returning to Main Menu...")
                 clear()
                 login_or_create()
 
@@ -145,28 +151,30 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
     they made a mistake.
     """
 
-    print("\nHere are your entered details:")
-    print(f"First Name: {first_name}")
+    print(Fore.YELLOW + "\nHere are your entered details:")
+    print(Style.RESET_ALL + f"First Name: {first_name}")
     print(f"Last Name: {last_name}")
     print(f"Date of Birth: {date_of_birth}")
 
-    print("\nAre these details correct? Please Confirm Yes or No")
+    print(Fore.YELLOW + "\nAre these details correct?"
+                        " Please Confirm YES or NO")
     # Creates a list of expected strings for validate function
     valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input("Enter here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
                 clear()
-                print(f"Thank you {first_name} for your confirmation.\n")
+                print(Fore.CYAN + f"Thank you {first_name} for your"
+                                  " confirmation.\n")
                 number_generator(first_name, last_name, date_of_birth)
                 acc_create_finished()
 
             elif mode_str == "NO":
                 clear()
-                print("No problem. Lets go back...")
+                print(Fore.RED + "No problem. Lets go back...")
                 create_account()
 
             break
@@ -178,24 +186,25 @@ def create_account():
     Calls validate_dob fuction if True code breaks, if false
     while loop restarts.
     """
-    print("Welcome to the Account Creation Terminal.\n")
+    print(Fore.YELLOW + "Welcome to the Account Creator.")
+    print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
 
-    first_name = input("Please Enter First Name:\n")
+    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n")
 
     last_name = input("Please Enter Last Name:\n")
 
-    print("NOTICE: You must be 18+ to Create an Account\n")
+    print(Fore.RED + "NOTICE: You must be 18+ to Create an Account\n")
 
     while True:
-        date_of_birth = input("Please Enter Date of Birth in the format"
-                              "(YYYY-MM-DD):\n")
+        date_of_birth = input(Style.RESET_ALL + "Please Enter Date of Birth in"
+                              " the format (YYYY-MM-DD):\n")
         # Calls Date of Birth Validation function
         if validate_dob(date_of_birth, first_name):
             clear()
             acc_create_confirm(first_name, last_name, date_of_birth)
             break
         else:
-            print("Please Try Again.\n")
+            print(Fore.RED + "Please Try Again.\n")
 
 
 def validate_dob(date_of_birth, first_name):
@@ -221,28 +230,30 @@ def validate_dob(date_of_birth, first_name):
             return True
         else:
             clear()
-            print(f"Sorry {first_name}, you must be 18 or older"
+            print(Fore.RED + f"Sorry {first_name}, you must be 18 or older"
                   " to create an account with us.\n")
             login_or_create()
 
     except ValueError:
         clear()
-        print(f"Sorry, your date input '{date_of_birth}'"
+        print(Fore.RED + f"Sorry, your date input '{date_of_birth}'"
               " was incorrectly formatted.")
         return False
 
 
 def acc_depo_term(fname):
     clear()
-    print("Welcome to Eternity Holdings deposit terminal")
-    print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
+    print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
+    print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
+                     " Returning to HUB...\n")
     logged_in_hub(fname)
 
 
 def acc_withdraw_term(fname):
     clear()
-    print("Welcome to Eternity Holdings withdraw terminal")
-    print(f"Sorry {fname} this feature is unfinished! Returning to HUB...\n")
+    print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
+    print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
+                     " Returning to HUB...\n")
     logged_in_hub(fname)
 
 
@@ -251,22 +262,24 @@ def acc_logout_confirm(fname):
     Allows the user to return if they
     did not want to logout
     """
-    print(f"{fname} are you sure you want to Log Out?\n")
-    print("Please Enter 'YES' or 'NO'")
+    print(Fore.YELLOW + f"{fname} are you sure you want to Log Out?\n")
+    print(Style.RESET_ALL + "Please Enter 'YES' or 'NO'")
     valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input("Enter here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
                 clear()
-                print("You are safely being logged out.")
-                print("Remember to spend Responsibly & Have an amazing day.\n")
+                print(Fore.GREEN + "Remember to spend Responsibly"
+                                   " & Have an amazing day.")
+                print(Fore.RED + "You are safely being logged out.\n")
                 login_or_create()
+
             elif mode_str == "NO":
                 clear()
-                print("Returning back...\n")
+                print(Fore.RED + "Returning back...\n")
                 logged_in_hub(fname)
 
 
@@ -274,18 +287,20 @@ def logged_in_hub(fname):
     """
     The Eternity Holding's main HUB
     """
-    print(f"Welcome {fname} you are now at the Eternity Bank HUB.")
-    print("From here you have access to all our services."
+    print(Fore.YELLOW + f"Welcome {fname} you are now"
+                        " at the Eternity Bank HUB.")
+    print(Fore.CYAN + "From here you have access to all our services."
           " See below for our current available options:\n")
 
-    print("Enter 'DEPOSIT' to go to the Deposit funds terminal.")
+    print(Style.RESET_ALL + "Enter 'DEPOSIT' to go to"
+                            "the Deposit funds terminal.")
     print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
     print("Enter 'LOGOUT' to go back to the Main Menu.\n")
     # Creates a list of expected strings for validate function
     valid_mode_input = ["DEPOSIT", "WITHDRAW", "LOGOUT"]
 
     while True:
-        mode_str = input("Enter here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
 
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "DEPOSIT":
@@ -315,11 +330,12 @@ def login_account():
     -If True the loop breaks and calls logged_in_menu.
     -If False it returns user to the start.
     """
-    print("Welcome to the Account Login Terminal.\n")
+    print(Fore.YELLOW + "Welcome to the Account Login.")
+    print(Fore.CYAN + "You're now at the Account Login Terminal.\n")
 
     while True:
         # Assigns a variable to each user input
-        fname = input("Please Enter First Name:\n")
+        fname = input(Style.RESET_ALL + "Please Enter First Name:\n")
         lname = input("Please Enter Last Name:\n")
         acc_num = input("Please Enter Account Number:\n")
         pin_num = input("Please Enter the Account Pin number:\n")
@@ -327,12 +343,12 @@ def login_account():
         # Calls function and gives it the input values
         if locate_acc(fname, lname, acc_num, pin_num):
             clear()
-            print("You have Successfully logged in.\n")
+            print(Fore.GREEN + "You have Successfully logged in.\n")
             logged_in_hub(fname)
             break
         else:
             clear()
-            print("Sorry your search does not match"
+            print(Fore.RED + "Sorry your search does not match"
                   " any Account in our database.")
             print("Returning to Main menu...\n")
             login_or_create()
@@ -374,27 +390,27 @@ def login_or_create():
     via the terminal, which must be the correct value of
     'Create' or 'Login'. The loop will repeat until input is valid.
     """
-    print("Welcome to the Main Menu.")
-    print("You're now at the Create & Login Terminal.\n")
-    print("To proceed with your banking experience,"
+    print(Fore.YELLOW + "Welcome to the Main Menu.")
+    print(Fore.CYAN + "You're now at the Create & Login Terminal.\n")
+    print(Style.RESET_ALL + "To proceed with your banking experience,"
           " please choose 'CREATE' or 'LOGIN'.")
 
     # Creates a list of expected strings for validate function
     valid_mode_input = ["CREATE", "LOGIN"]
 
     while True:
-        mode_str = input("Enter here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
         # Calls Mode Validation to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "CREATE":
                 clear()
-                print(f"You chose to {mode_str} an Account!")
-                print("Sending to Account Creation...\n")
+                print(Fore.GREEN + f"You chose to {mode_str} an Account!")
+                print("Sending to Account Creator...\n")
                 create_account()
 
             elif mode_str == "LOGIN":
                 clear()
-                print(f"You chose to {mode_str} to an Account!")
+                print(Fore.GREEN + f"You chose to {mode_str} to an Account!")
                 print("Sending to Account Login...\n")
                 login_account()
 
@@ -412,7 +428,7 @@ def validate_mode(mode_str, valid_mode_input):
     if mode_str in valid_mode_input:
         return True
     else:
-        print(f"Wrong User input of '{mode_str}' detected,"
+        print(Fore.RED + f"Wrong User input of '{mode_str}' detected,"
               "this is incorrect. Please try again.")
         return False
 
@@ -425,6 +441,6 @@ def main():
 
 
 if __name__ == "__main__":
-    print("\nEternity Holdings the #1 App"
+    print(Fore.YELLOW + "\nEternity Holdings the #1 App"
           " to automate your banking needs!\n")
     main()
