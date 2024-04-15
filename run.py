@@ -129,7 +129,7 @@ def acc_create_finished():
     valid_mode_input = ["PROCEED"]
 
     while True:
-        mode_str = input("Enter here:\n")
+        mode_str = input("Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "PROCEED":
@@ -152,19 +152,19 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
 
     print("\nAre these details correct? Please Confirm Yes or No")
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["Yes", "No"]
+    valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input("Enter here:\n")
+        mode_str = input("Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "Yes":
+            if mode_str == "YES":
                 clear()
                 print(f"Thank you {first_name} for your confirmation.\n")
                 number_generator(first_name, last_name, date_of_birth)
                 acc_create_finished()
 
-            elif mode_str == "No":
+            elif mode_str == "NO":
                 clear()
                 print("No problem. Lets go back...")
                 create_account()
@@ -252,11 +252,11 @@ def acc_logout_confirm(fname):
     did not want to logout
     """
     print(f"{fname} are you sure you want to Log Out?\n")
-    print("Please Enter 'Yes' or 'No'")
+    print("Please Enter 'YES' or 'NO'")
     valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input("Enter here:\n")
+        mode_str = input("Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
@@ -278,27 +278,27 @@ def logged_in_hub(fname):
     print("From here you have access to all our services."
           " See below for our current available options:\n")
 
-    print("Enter 'Deposit' to go to the Deposit funds terminal.")
-    print("Enter 'Withdraw' to go to the Withdraw funds terminal.")
-    print("Enter 'Logout' to go back to the Main Menu.\n")
+    print("Enter 'DEPOSIT' to go to the Deposit funds terminal.")
+    print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
+    print("Enter 'LOGOUT' to go back to the Main Menu.\n")
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["Deposit", "Withdraw", "Logout"]
+    valid_mode_input = ["DEPOSIT", "WITHDRAW", "LOGOUT"]
 
     while True:
-        mode_str = input("Enter here:\n")
+        mode_str = input("Enter here:\n").upper()
 
         if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "Deposit":
+            if mode_str == "DEPOSIT":
                 clear()
                 print("Going to the Deposit terminal!\n")
                 acc_depo_term(fname)
 
-            elif mode_str == "Withdraw":
+            elif mode_str == "WITHDRAW":
                 clear()
                 print("Going to the Withdraw terminal!\n")
                 acc_withdraw_term(fname)
 
-            elif mode_str == "Logout":
+            elif mode_str == "LOGOUT":
                 clear()
                 acc_logout_confirm(fname)
 
@@ -377,22 +377,22 @@ def login_or_create():
     print("Welcome to the Main Menu.")
     print("You're now at the Create & Login Terminal.\n")
     print("To proceed with your banking experience,"
-          " please choose 'Create' or 'Login'.")
-    print("Insert the values exactly as shown above.\n")
+          " please choose 'CREATE' or 'LOGIN'.")
+
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["Create", "Login"]
+    valid_mode_input = ["CREATE", "LOGIN"]
 
     while True:
-        mode_str = input("Enter here:\n")
+        mode_str = input("Enter here:\n").upper()
         # Calls Mode Validation to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "Create":
+            if mode_str == "CREATE":
                 clear()
                 print(f"You chose to {mode_str} an Account!")
                 print("Sending to Account Creation...\n")
                 create_account()
 
-            elif mode_str == "Login":
+            elif mode_str == "LOGIN":
                 clear()
                 print(f"You chose to {mode_str} to an Account!")
                 print("Sending to Account Login...\n")
