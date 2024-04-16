@@ -48,7 +48,7 @@ def update_sheet_data(first_name,
                       date_of_birth,
                       nine_digit_num,
                       four_digit_num,
-                      starting_bal,
+                      user_bal,
                       worksheet):
     """
     Updates Google Sheet with user Inputed data.
@@ -62,11 +62,11 @@ def update_sheet_data(first_name,
     acc_num = nine_digit_num
     pin_num = four_digit_num
     # Converts Money value to string
-    starting_balance = str(starting_bal)
+    user_balance = str(user_bal)
     # Grabs the worksheet to send data to
     worksheet_to_update = SHEET.worksheet('accountlist')
     # Creates a list for the Values
-    row_data = [fname, lname, acc_num, pin_num, bdate, starting_balance]
+    row_data = [fname, lname, acc_num, pin_num, bdate, user_balance]
     # Updates worksheet with the new data
     worksheet_to_update.append_row(row_data)
 
@@ -86,7 +86,7 @@ def get_sheet_data(column_index):
     return column_values
 
 
-def number_generator(first_name, last_name, date_of_birth, column_values):
+def number_generator(first_name, last_name, date_of_birth):
     """
     Generates random 4 and 9 digit number.
     Calls get_sheet_data function to collect data
@@ -121,10 +121,10 @@ def number_generator(first_name, last_name, date_of_birth, column_values):
                              " you will need them to access your Account"
                              " in Login.")
 
-            starting_bal = Money(amount='0.00', currency='EUR')
+            user_bal = Money(amount='0.00', currency='EUR')
             update_sheet_data(first_name, last_name, date_of_birth,
                               nine_digit_num, four_digit_num,
-                              starting_bal, 'accountlist')
+                              user_bal, 'accountlist')
             break
 
 
@@ -182,33 +182,6 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
             break
 
 
-def create_account():
-    """
-    Collects DOB, First and Last Name data from user input.
-    Calls validate_dob fuction if True code breaks, if false
-    while loop restarts.
-    """
-    print(Fore.YELLOW + "Welcome to the Account Creator.")
-    print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
-
-    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n")
-
-    last_name = input("Please Enter Last Name:\n")
-
-    print(Fore.RED + "NOTICE: You must be 18+ to Create an Account\n")
-
-    while True:
-        date_of_birth = input(Style.RESET_ALL + "Please Enter Date of Birth in"
-                              " the format (YYYY-MM-DD):\n")
-        # Calls Date of Birth Validation function
-        if validate_dob(date_of_birth, first_name):
-            clear()
-            acc_create_confirm(first_name, last_name, date_of_birth)
-            break
-        else:
-            print(Fore.RED + "Please Try Again.\n")
-
-
 def validate_dob(date_of_birth, first_name):
     """
     Validates user input for date.
@@ -243,6 +216,33 @@ def validate_dob(date_of_birth, first_name):
         return False
 
 
+def create_account():
+    """
+    Collects DOB, First and Last Name data from user input.
+    Calls validate_dob fuction if True code breaks, if false
+    while loop restarts.
+    """
+    print(Fore.YELLOW + "Welcome to the Account Creator.")
+    print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
+
+    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n")
+
+    last_name = input("Please Enter Last Name:\n")
+
+    print(Fore.RED + "NOTICE: You must be 18+ to Create an Account\n")
+
+    while True:
+        date_of_birth = input(Style.RESET_ALL + "Please Enter Date of Birth in"
+                              " the format (YYYY-MM-DD):\n")
+        # Calls Date of Birth Validation function
+        if validate_dob(date_of_birth, first_name):
+            clear()
+            acc_create_confirm(first_name, last_name, date_of_birth)
+            break
+        else:
+            print(Fore.RED + "Please Try Again.\n")
+
+
 def login_user_bal(acc_num):
     """
     Checks current logged in accounts
@@ -255,7 +255,51 @@ def login_user_bal(acc_num):
     logged_in_user = acc_num_list.index(acc_num)
     current_acc_bal = acc_bal_list[logged_in_user]
 
-    print(Fore.GREEN + "Your Account Balance is:", current_acc_bal)
+    print(Fore.YELLOW + "\nYour Account Balance is:", current_acc_bal)
+
+
+def update_acc_bal(user_amount, acc_num, add=True):
+    """
+    Updates the User Account Balance in Google Sheet.
+    Gets logged in Accounts balance and converts
+    the string value to a float, then takes the user amount.
+
+    -If add=True the current balance & user input add.
+    -If add=False the current balance & user input subtract.
+    """
+    try:
+        # Find the row index corresponding to the account number.
+        all_rows = ACCOUNTLIST.get_all_values()
+        acc_num_list = [row[2].strip() for row in all_rows]
+        acc_num = acc_num.strip()
+        logged_in_user_index = acc_num_list.index(acc_num) + 1
+
+        # Currency set to EUR
+        currency = 'EUR'
+
+        # Extract the numerical value from the string.
+        current_acc_bal_str = all_rows[logged_in_user_index - 1][5]
+        currency, amount_str = current_acc_bal_str.split()
+        current_acc_bal = float(amount_str)
+
+        # Convert amount_value to float for math equation.
+        amount_value = float(user_amount.amount)
+
+        # Determine whether to add or subtract based on the add parameter
+        if add:
+            new_acc_bal = current_acc_bal + amount_value
+        else:
+            new_acc_bal = current_acc_bal - amount_value
+
+        # Format the new balance as a string with currency prefix
+        new_acc_bal_str = f'{currency} {new_acc_bal:.2f}'
+
+        ACCOUNTLIST.update_cell(logged_in_user_index, 6, new_acc_bal_str)
+
+        print(Fore.GREEN + "Updating Account balance...")
+
+    except ValueError:
+        print(Fore.RED + "Error: Account number not found or invalid input.")
 
 
 def acc_depo_term(fname, acc_num):
@@ -264,11 +308,37 @@ def acc_depo_term(fname, acc_num):
     """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
-    login_user_bal(acc_num)
+    print(Fore.CYAN + "From here you can deposit funds into your Eternity"
+                      " Holdings Account. See below for your current balance.")
 
-    print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
-                     " Returning to HUB...\n")
-    logged_in_hub(fname, acc_num)
+    while True:
+        login_user_bal(acc_num)
+
+        print(Style.RESET_ALL + "\nTo return to the HUB please Enter 'EXIT'.")
+        print("Please Enter how much you wish to deposit below:")
+        print(Fore.RED + "\nReminder to use the correct format. Example:"
+                         " 2, 13.15, etc")
+        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+
+        if mode_str == "EXIT":
+            clear()
+            print(Fore.GREEN + "Returning to HUB...\n")
+            logged_in_hub(fname, acc_num)
+            return
+
+        try:
+            user_amount = Money(mode_str, 'EUR')
+            update_acc_bal(user_amount, acc_num, add=True)
+
+            clear()
+            print(Fore.GREEN + f"{user_amount} has been deposited into"
+                               " your account.")
+
+        except ValueError:
+            clear()
+            print(Fore.RED + f"The Input of {mode_str} is"
+                             " incorrect. Remember to use the correct"
+                             " format!")
 
 
 def acc_withdraw_term(fname, acc_num):
@@ -277,9 +347,37 @@ def acc_withdraw_term(fname, acc_num):
     """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
-    print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
-                     " Returning to HUB...\n")
-    logged_in_hub(fname, acc_num)
+    print(Fore.CYAN + "From here you can withdraw funds out of your Eternity"
+                      " Holdings Account. See below for your current balance.")
+
+    while True:
+        login_user_bal(acc_num)
+
+        print(Style.RESET_ALL + "\nTo return to the HUB please Enter 'EXIT'.")
+        print("Please Enter how much you wish to withdraw below:")
+        print(Fore.RED + "\nReminder to use the correct format. Example:"
+                         " 2, 13.15, etc")
+        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+
+        if mode_str == "EXIT":
+            clear()
+            print(Fore.GREEN + "Returning to HUB...\n")
+            logged_in_hub(fname, acc_num)
+            return
+
+        try:
+            user_amount = Money(mode_str, 'EUR')
+            update_acc_bal(user_amount, acc_num, add=False)
+
+            clear()
+            print(Fore.GREEN + f"{user_amount} has been withdrawn out of"
+                               " your account.")
+
+        except ValueError:
+            clear()
+            print(Fore.RED + f"The Input of {mode_str} is"
+                             " incorrect. Remember to use the correct"
+                             " format!")
 
 
 def acc_logout_confirm(fname, acc_num):
@@ -337,7 +435,7 @@ def logged_in_hub(fname, acc_num):
             elif mode_str == "WITHDRAW":
                 clear()
                 print("Going to the Withdraw terminal!\n")
-                acc_withdraw_term(fname)
+                acc_withdraw_term(fname, acc_num)
 
             elif mode_str == "BALANCE":
                 clear()
@@ -347,7 +445,7 @@ def logged_in_hub(fname, acc_num):
 
             elif mode_str == "LOGOUT":
                 clear()
-                acc_logout_confirm(fname)
+                acc_logout_confirm(fname, acc_num)
 
             else:
                 print(f"The Input of {mode_str} is incorrect.")
