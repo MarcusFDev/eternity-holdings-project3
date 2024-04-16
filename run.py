@@ -35,6 +35,14 @@ ACCOUNTLIST = SHEET.worksheet('accountlist')
 init()
 
 
+def clear():
+    """
+    Clear function to clean-up the terminal window so the User has
+    a better visual on the terminal content that is most relevant.
+    """
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 def update_sheet_data(first_name,
                       last_name,
                       date_of_birth,
@@ -63,40 +71,34 @@ def update_sheet_data(first_name,
     worksheet_to_update.append_row(row_data)
 
 
-def clear():
+def get_sheet_data(column_index):
     """
-    Clear function to clean-up the terminal window so the User has
-    a better visual on the terminal content that is most relevant.
-    """
-    os.system("cls" if os.name == "nt" else "clear")
-
-
-def get_account_and_pin(column_index):
-    """
-    Checks the Account and Pin numbers
-    values found in Google sheet. Converts
-    those values into integers.
+    Checks the Account sheet Data. Finds
+    values found in Google sheet.
+    Sends those values to where the function was called.
     """
     account_list_sheet = SHEET.worksheet('accountlist')
 
     column_values = account_list_sheet.col_values(column_index)
     # Collects all column values after the first row
     column_values = column_values[1:]
-    # Returns the column data to integers & removes empty values
-    return [int(value) for value in column_values if value]
+    # Returns the column data to where this function was called.
+    return column_values
 
 
-def number_generator(first_name, last_name, date_of_birth):
+def number_generator(first_name, last_name, date_of_birth, column_values):
     """
     Generates random 4 and 9 digit number.
-    Calls get_account_and_pin function to collect
-    data from Google Sheet. Checks generated numbers with
-    sheet data to prevent duplicates, generates Account balance
+    Calls get_sheet_data function to collect data
+    from Google Sheet. Coverts the data to integers.
+
+    Checks generated numbers with sheet data to
+    prevent duplicates, generates Account balance
     & Calls update_sheet function.
     """
-    # Collects Sheet Data from Columns 3 and 4 respectively
-    exist_acc_num = get_account_and_pin(3)
-    exist_pin_num = get_account_and_pin(4)
+    # Collects Sheet Data from Columns 3 and 4 & converts them to integers.
+    exist_acc_num = [int(value) for value in get_sheet_data(3) if value]
+    exist_pin_num = [int(value) for value in get_sheet_data(4) if value]
 
     while True:
         # Generates a random 9 digit number.
@@ -104,7 +106,7 @@ def number_generator(first_name, last_name, date_of_birth):
         # Generates a random 4 digit number.
         four_digit_num = random.randint(1000, 9999)
 
-        # Checks if generated num already exists in Google sheet
+        # Checks if generated num already exists in Google sheet.
         if (nine_digit_num not in exist_acc_num) and \
            (four_digit_num not in exist_pin_num):
             print(Fore.GREEN + "Creating your new Account"
@@ -241,23 +243,46 @@ def validate_dob(date_of_birth, first_name):
         return False
 
 
-def acc_depo_term(fname):
+def login_user_bal(acc_num):
+    """
+    Checks current logged in accounts
+    balance from Google Sheet and prints
+    result to Terminal.
+    """
+    acc_num_list = get_sheet_data(3)
+    acc_bal_list = get_sheet_data(6)
+
+    logged_in_user = acc_num_list.index(acc_num)
+    current_acc_bal = acc_bal_list[logged_in_user]
+
+    print(Fore.GREEN + "Your Account Balance is:", current_acc_bal)
+
+
+def acc_depo_term(fname, acc_num):
+    """
+    Account Deposit Terminal.
+    """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
+    login_user_bal(acc_num)
+
     print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
                      " Returning to HUB...\n")
-    logged_in_hub(fname)
+    logged_in_hub(fname, acc_num)
 
 
-def acc_withdraw_term(fname):
+def acc_withdraw_term(fname, acc_num):
+    """
+    Account Withdraw Terminal.
+    """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
     print(Fore.RED + f"Sorry {fname} this feature is unfinished!"
                      " Returning to HUB...\n")
-    logged_in_hub(fname)
+    logged_in_hub(fname, acc_num)
 
 
-def acc_logout_confirm(fname):
+def acc_logout_confirm(fname, acc_num):
     """
     Allows the user to return if they
     did not want to logout
@@ -280,14 +305,14 @@ def acc_logout_confirm(fname):
             elif mode_str == "NO":
                 clear()
                 print(Fore.RED + "Returning back...\n")
-                logged_in_hub(fname)
+                logged_in_hub(fname, acc_num)
 
 
-def logged_in_hub(fname):
+def logged_in_hub(fname, acc_num):
     """
     The Eternity Holding's main HUB
     """
-    print(Fore.YELLOW + f"Welcome {fname} you are now"
+    print(Fore.YELLOW + f"\nWelcome {fname} you are now"
                         " at the Eternity Bank HUB.")
     print(Fore.CYAN + "From here you have access to all our services."
           " See below for our current available options:\n")
@@ -295,9 +320,10 @@ def logged_in_hub(fname):
     print(Style.RESET_ALL + "Enter 'DEPOSIT' to go to"
                             "the Deposit funds terminal.")
     print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
+    print("Enter 'BALANCE' to check your current account balance.")
     print("Enter 'LOGOUT' to go back to the Main Menu.\n")
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["DEPOSIT", "WITHDRAW", "LOGOUT"]
+    valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "LOGOUT"]
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -306,12 +332,18 @@ def logged_in_hub(fname):
             if mode_str == "DEPOSIT":
                 clear()
                 print("Going to the Deposit terminal!\n")
-                acc_depo_term(fname)
+                acc_depo_term(fname, acc_num)
 
             elif mode_str == "WITHDRAW":
                 clear()
                 print("Going to the Withdraw terminal!\n")
                 acc_withdraw_term(fname)
+
+            elif mode_str == "BALANCE":
+                clear()
+                print(Fore.CYAN + f"Hello {fname} see below for your balance:")
+                login_user_bal(acc_num)
+                logged_in_hub(fname, acc_num)
 
             elif mode_str == "LOGOUT":
                 clear()
@@ -344,7 +376,7 @@ def login_account():
         if locate_acc(fname, lname, acc_num, pin_num):
             clear()
             print(Fore.GREEN + "You have Successfully logged in.\n")
-            logged_in_hub(fname)
+            logged_in_hub(fname, acc_num)
             break
         else:
             clear()
