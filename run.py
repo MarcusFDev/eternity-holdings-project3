@@ -52,8 +52,9 @@ def update_sheet_data(first_name,
                       worksheet):
     """
     Updates Google Sheet with user Inputed data.
+
     -Creates list of data to send to sheet.
-    -Converts starting_bal value to a string.
+    -Converts user_bal value to a string.
     """
     # Converts values to shorter & approriate value names
     fname = first_name
@@ -73,8 +74,7 @@ def update_sheet_data(first_name,
 
 def get_sheet_data(column_index):
     """
-    Checks the Account sheet Data. Finds
-    values found in Google sheet.
+    Checks the Account sheet Data. Finds values found in Google sheet.
     Sends those values to where the function was called.
     """
     account_list_sheet = SHEET.worksheet('accountlist')
@@ -89,12 +89,12 @@ def get_sheet_data(column_index):
 def number_generator(first_name, last_name, date_of_birth):
     """
     Generates random 4 and 9 digit number.
-    Calls get_sheet_data function to collect data
+    Calls 'get_sheet_data' function to collect data
     from Google Sheet. Coverts the data to integers.
 
     Checks generated numbers with sheet data to
     prevent duplicates, generates Account balance
-    & Calls update_sheet function.
+    & calls 'update_sheet_data' function.
     """
     # Collects Sheet Data from Columns 3 and 4 & converts them to integers.
     exist_acc_num = [int(value) for value in get_sheet_data(3) if value]
@@ -130,7 +130,12 @@ def number_generator(first_name, last_name, date_of_birth):
 
 def acc_create_finished():
     """
-    After the Account details are printed to the terminal
+    Account Creation Confirmed message.
+    When called, prompts the user to input 'PROCEED' and
+    uses 'validate_mode' function to check user input.
+
+    - If Input is True, calls the 'start_menu' function.
+    - If Input is False, the while loop repeats.
     """
     print(Fore.YELLOW + "When you're ready,"
           " Please enter 'PROCEED' to return to the Main Menu.\n")
@@ -148,9 +153,13 @@ def acc_create_finished():
 
 def acc_create_confirm(first_name, last_name, date_of_birth):
     """
-    Allows the user to confirm their First & Last name
-    and their DOB. Giving the user the option to return if
-    they made a mistake.
+    Account Detail confirmation.
+    Prints the user inputs to the terminal & prompts the user to
+    confirm their details before an account is made.
+
+    - If user input is 'YES' the 'number_generator' & 'acc_create_finished'
+      functions are called.
+    - If user input is 'NO' the 'create_account' function is called.
     """
 
     print(Fore.YELLOW + "\nHere are your entered details:")
@@ -185,10 +194,11 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
 def validate_dob(date_of_birth, first_name):
     """
     Validates user input for date.
-    Checks user input to be over the Age of 18,
-    -If the input is Valid and over 18 code returns true value.
-    -If the input is Valid but under 18 code returns to start.
-    -If the input is inValid, returns false value.
+    Checks user input to be over the Age of 18.
+
+    - If the input is Valid and over 18 code returns true value.
+    - If the input is Valid but under 18 code returns to start.
+    - If the input is inValid, returns false value.
     """
     try:
         # Formats User Date Input
@@ -519,7 +529,7 @@ def login_account():
           " please enter 'PROCEED'.")
     print(Fore.RED + "To return to the Main Menu please Enter 'EXIT'.\n")
 
-# Creates a list of expected strings for validate function
+    # Creates a list of expected strings for validate function
     valid_mode_input = ["EXIT", "PROCEED"]
 
     while True:
@@ -549,7 +559,7 @@ def login_account():
         pin_num = input("Please Enter the Account Pin number:\n")
 
         # Calls function and gives it the input values
-        if locate_acc(fname, lname, acc_num, pin_num):
+        if login_acc_checker(fname, lname, acc_num, pin_num):
             clear()
             print(Fore.GREEN + "You have Successfully logged in.\n")
             logged_in_hub(fname, acc_num)
@@ -562,13 +572,14 @@ def login_account():
             start_menu()
 
 
-def locate_acc(fname, lname, acc_num, pin_num):
+def login_acc_checker(fname, lname, acc_num, pin_num):
     """
+    Login Account Checker for the 'login_account' function.
     Extracts corresponding data from worksheet.
     Creates a list of the data. Compares the data with user input.
 
     - If the values match, returns True.
-    - If not, returns False.
+    - If not they do not, returns False.
     """
     account_list_sheet = SHEET.worksheet('accountlist')
     # Collects all row data
