@@ -283,9 +283,9 @@ def create_account():
 
     print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
 
-    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n")
+    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n").upper()
 
-    last_name = input("Please Enter Last Name:\n")
+    last_name = input("Please Enter Last Name:\n").upper()
 
     print(Fore.RED + "NOTICE: You must be 18+ to Create an Account\n")
 
@@ -572,8 +572,8 @@ def login_account():
     while True:
         print(Fore.CYAN + "You're now at the Account Login Terminal.\n")
         # Assigns a variable to each user input
-        fname = input(Style.RESET_ALL + "Please Enter First Name:\n")
-        lname = input("Please Enter Last Name:\n")
+        fname = input(Style.RESET_ALL + "Please Enter First Name:\n").upper()
+        lname = input("Please Enter Last Name:\n").upper()
         acc_num = input("Please Enter Account Number:\n")
         pin_num = input("Please Enter the Account Pin number:\n")
 
