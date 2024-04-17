@@ -109,23 +109,13 @@ def number_generator(first_name, last_name, date_of_birth):
         # Checks if generated num already exists in Google sheet.
         if (nine_digit_num not in exist_acc_num) and \
            (four_digit_num not in exist_pin_num):
-            print(Fore.GREEN + "Creating your new Account"
-                               " with Eternity Holdings...")
-            print(Fore.YELLOW + "These are your Account details:\n")
-            print(Style.RESET_ALL + f"First Name: {first_name}")
-            print(f"Last Name: {last_name}")
-            print(f"Date of Birth: {date_of_birth}")
-            print("\nYour New Account Number:", nine_digit_num)
-            print("Your New Account PIN Number:", four_digit_num)
-            print(Fore.RED + "\nPlease take note of these details as"
-                             " you will need them to access your Account"
-                             " in Login.")
 
             user_bal = Money(amount='0.00', currency='EUR')
             update_sheet_data(first_name, last_name, date_of_birth,
                               nine_digit_num, four_digit_num,
                               user_bal, 'accountlist')
-            break
+
+            return (nine_digit_num, four_digit_num, user_bal)
 
 
 def acc_create_finished():
@@ -137,8 +127,8 @@ def acc_create_finished():
     - If Input is True, calls the 'start_menu' function.
     - If Input is False, the while loop repeats.
     """
-    print(Fore.YELLOW + "When you're ready,"
-          " Please enter 'PROCEED' to return to the Main Menu.\n")
+    print(Fore.CYAN + "When you're ready, Please enter 'PROCEED' to return to"
+                      " the Main Menu.\n")
     valid_mode_input = ["PROCEED"]
 
     while True:
@@ -146,8 +136,8 @@ def acc_create_finished():
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "PROCEED":
-                print(Fore.GREEN + "Returning to Main Menu...")
                 clear()
+                print(Fore.GREEN + "Returning to Main Menu...")
                 start_menu()
 
 
@@ -167,8 +157,8 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
     print(f"Last Name: {last_name}")
     print(f"Date of Birth: {date_of_birth}")
 
-    print(Fore.YELLOW + "\nAre these details correct?"
-                        " Please Confirm YES or NO")
+    print(Fore.CYAN + "\nAre these details correct?"
+                      " Please Confirm YES or NO")
     # Creates a list of expected strings for validate function
     valid_mode_input = ["YES", "NO"]
 
@@ -178,36 +168,80 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
                 clear()
-                print(Fore.CYAN + f"Thank you {first_name} for your"
-                                  " confirmation.\n")
-                number_generator(first_name, last_name, date_of_birth)
+                print(Fore.GREEN + f"Thank you {first_name} for your"
+                                   " confirmation...\n")
+                new_acc_values = number_generator(first_name, last_name,
+                                                  date_of_birth)
+                nine_digit_num, four_digit_num, user_bal = new_acc_values
+                create_backup_setup()
+
+                print(Fore.GREEN + "Creating your new Account"
+                                   " with Eternity Holdings...\n")
+                print(Fore.YELLOW + "These are your Account details:\n")
+                print(Style.RESET_ALL + f"First Name: {first_name}")
+                print(f"Last Name: {last_name}")
+                print(f"Date of Birth: {date_of_birth}")
+                print("\nYour New Account Number:", nine_digit_num)
+                print("Your New Account PIN Number:", four_digit_num)
+                print(Fore.RED + "\nPlease take note of these details as"
+                                 " you will need them to access your Account"
+                                 " in Login.")
                 acc_create_finished()
+                break
 
             elif mode_str == "NO":
                 clear()
                 print(Fore.RED + "No problem. Lets go back...")
                 create_account()
+                break
 
-            break
 
-
-def create_account_two():
+def create_backup_setup():
     """
-    Create Account Terminal Two.
+    Create Account Terminal Backup Setup.
     """
-    print(Fore.YELLOW + "Welcome to the Account Creator.\n")
+    print(Fore.YELLOW + "Welcome to Account Creator.")
+    print(Fore.CYAN + "You're at the Setup Account Backup Terminal\n")
 
-    print(Style.RESET_ALL + "Just a few more Questions...\n")
+    print(Style.RESET_ALL + "Do you want to set up your Account Recovery"
+                            " Backup? Please Enter 'YES' or 'NO'\n")
+    print(Fore.RED + "If your not sure what a Account Recovery Backup is"
+                     " please enter 'WHY'.")
 
-    mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+    valid_mode_input = ["YES", "NO", "WHY"]
 
-    if mode_str == "WHY":
-        print(Fore.GREEN + "We collect this data so that in the event of"
-                           " you losing access to your account, you may"
-                           " be able to regain access again yourself without"
-                           " needing to contact support.\n")
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "YES":
+                clear()
+                print("Thank you for choosing to Backup your Account")
+                break
+            elif mode_str == "NO":
+                clear()
+                print(Fore.RED + "You chose not to set up your Account"
+                                 " Recovery Backup.")
+                print(Fore.GREEN + "Returning back...")
+                return
 
-    location = input(Style.RESET_ALL + "Please Enter Country of Residence:\n")
+            elif mode_str == "WHY":
+                print(Fore.YELLOW + "\nThe Account Recovery Backup asks you a"
+                                    " few more specific questions.\n")
+                print(Style.RESET_ALL +
+                      "We collect this data so that in the event of you losing"
+                      " access to your account, you may be able to regain"
+                      " access again yourself without needing to contact"
+                      " support.\n")
+                continue
+
+    print(Fore.YELLOW + "Account Recovery Backup process has begun...\n")
+
+    print(Style.RESET_ALL + "Enter Country of Residence:\n")
+    location = input(Fore.GREEN + "Enter here:\n")
+
+    print(Style.RESET_ALL + "Enter Email Address:")
+
 
 
 def validate_dob(date_of_birth, first_name):
@@ -281,6 +315,7 @@ def create_account():
 
                 break
 
+    print(Fore.YELLOW + "Welcome to Account Creator.\n")
     print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
 
     first_name = input(Style.RESET_ALL + "Please Enter First Name:\n").upper()
