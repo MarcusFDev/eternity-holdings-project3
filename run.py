@@ -191,6 +191,25 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
             break
 
 
+def create_account_two():
+    """
+    Create Account Terminal Two.
+    """
+    print(Fore.YELLOW + "Welcome to the Account Creator.\n")
+
+    print(Style.RESET_ALL + "Just a few more Questions...\n")
+
+    mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+
+    if mode_str == "WHY":
+        print(Fore.GREEN + "We collect this data so that in the event of"
+                           " you losing access to your account, you may"
+                           " be able to regain access again yourself without"
+                           " needing to contact support.\n")
+
+    location = input(Style.RESET_ALL + "Please Enter Country of Residence:\n")
+
+
 def validate_dob(date_of_birth, first_name):
     """
     Validates user input for date.
@@ -628,14 +647,53 @@ def acc_recovery():
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} to Account"
                                    " Recovery!")
-                print("Proceeding to Account recovery...\n")
+                print("Sending to Account recovery...\n")
 
                 break
 
-    clear()
-    print(Fore.RED + "We're sorry but this feature has not yet been finished.")
-    print(Fore.GREEN + "Returning to the Main Menu...\n")
-    start_menu()
+    print(Fore.CYAN + "You're now at the Account Recovery Terminal.\n")
+    print(Fore.YELLOW + "Do you have your backup information with you?"
+                        " Example: Email, Country of Residence,"
+                        " Custom Password")
+
+    print(Style.RESET_ALL + "Please Enter 'YES' or 'NO' to continue.\n")
+
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["YES", "NO"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "YES":
+                clear()
+                print(Fore.GREEN + "Great News we can continue to recover your"
+                                   " Eternity Holdings Account!")
+                print("Proceeding...\n")
+
+                break
+
+            elif mode_str == "NO":
+                clear()
+                print(Fore.RED + "We're Sorry but without your backup"
+                                 " information we cannot help you"
+                                 " in the Account Recovery Terminal.\n")
+                print(Fore.CYAN + "Please Contact Customer Support at"
+                                  " marcusf.dev@gmail.com\n")
+                print(Style.RESET_ALL + "When you're ready please Enter"
+                                        " 'PROCEED'")
+
+                valid_mode_input = ["PROCEED"]
+                while True:
+                    mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+                    # Calls Mode Validation to check for correct input string
+                    if validate_mode(mode_str, valid_mode_input):
+                        if mode_str == "PROCEED":
+                            clear()
+                            print(Fore.GREEN + "Returning to the Main"
+                                               " menu...\n")
+                            start_menu()
 
 
 def start_menu():
