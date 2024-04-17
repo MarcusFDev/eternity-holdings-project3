@@ -143,7 +143,7 @@ def acc_create_finished():
             if mode_str == "PROCEED":
                 print(Fore.GREEN + "Returning to Main Menu...")
                 clear()
-                login_or_create()
+                start_menu()
 
 
 def acc_create_confirm(first_name, last_name, date_of_birth):
@@ -207,7 +207,7 @@ def validate_dob(date_of_birth, first_name):
             clear()
             print(Fore.RED + f"Sorry {first_name}, you must be 18 or older"
                   " to create an account with us.\n")
-            login_or_create()
+            start_menu()
 
     except ValueError:
         clear()
@@ -242,7 +242,7 @@ def create_account():
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
                 print("Sending to Main Menu...\n")
-                login_or_create()
+                start_menu()
 
             elif mode_str == "PROCEED":
                 clear()
@@ -333,7 +333,7 @@ def update_acc_bal(user_amount, acc_num, add=True):
         print(Fore.RED + "Error: Account number not found or invalid input.")
 
 
-def acc_depo_term(fname, acc_num):
+def acc_deposit(fname, acc_num):
     """
     Account Deposit Terminal. Prompts user to input
     'EXIT' or a numerical value to deposit to their account.
@@ -378,7 +378,7 @@ def acc_depo_term(fname, acc_num):
                              " format!")
 
 
-def acc_withdraw_term(fname, acc_num):
+def acc_withdrawal(fname, acc_num):
     """
     Account Withdraw Terminal. Prompts user to input
     'EXIT' or a numerical value to withdraw from their account.
@@ -444,7 +444,7 @@ def acc_logout_confirm(fname, acc_num):
                 print(Fore.GREEN + "Remember to spend Responsibly"
                                    " & Have an amazing day.")
                 print(Fore.RED + "You are safely being logged out.\n")
-                login_or_create()
+                start_menu()
 
             elif mode_str == "NO":
                 clear()
@@ -458,10 +458,10 @@ def logged_in_hub(fname, acc_num):
     they wish to go. Calls the Validate Mode function to
     check user input.
 
-    - If input 'DEPOSIT' is detected. Sends users to deposit terminal.
-    - If input 'WITHDRAW' is detected. Sends users to withdraw terminal.
-    - If input 'BALANCE' is detected. Calls login_user_bal function.
-    - If input 'LOGOUT' is detected. Calls acc_logout_confirm function.
+    - If input 'DEPOSIT' is detected. Calls the 'acc_deposit' function.
+    - If input 'WITHDRAW' is detected. Calls the 'acc_withdrawal' function.
+    - If input 'BALANCE' is detected. Calls 'login_user_bal' function.
+    - If input 'LOGOUT' is detected. Calls 'acc_logout_confirm' function.
     """
     print(Fore.YELLOW + f"\nWelcome {fname} you are now"
                         " at the Eternity Holdings HUB.")
@@ -483,12 +483,12 @@ def logged_in_hub(fname, acc_num):
             if mode_str == "DEPOSIT":
                 clear()
                 print("Going to the Deposit terminal!\n")
-                acc_depo_term(fname, acc_num)
+                acc_deposit(fname, acc_num)
 
             elif mode_str == "WITHDRAW":
                 clear()
                 print("Going to the Withdraw terminal!\n")
-                acc_withdraw_term(fname, acc_num)
+                acc_withdrawal(fname, acc_num)
 
             elif mode_str == "BALANCE":
                 clear()
@@ -530,7 +530,7 @@ def login_account():
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
                 print("Sending to Main Menu...\n")
-                login_or_create()
+                start_menu()
 
             elif mode_str == "PROCEED":
                 clear()
@@ -559,7 +559,7 @@ def login_account():
             print(Fore.RED + "Sorry your search does not match"
                   " any Account in our database.")
             print("Returning to Main Menu...\n")
-            login_or_create()
+            start_menu()
 
 
 def locate_acc(fname, lname, acc_num, pin_num):
@@ -611,7 +611,7 @@ def acc_recovery():
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
                 print("Sending to Main Menu...\n")
-                login_or_create()
+                start_menu()
 
             elif mode_str == "PROCEED":
                 clear()
@@ -624,15 +624,18 @@ def acc_recovery():
     clear()
     print(Fore.RED + "We're sorry but this feature has not yet been finished.")
     print(Fore.GREEN + "Returning to the Main Menu...\n")
-    login_or_create()
+    start_menu()
 
 
-def login_or_create():
+def start_menu():
     """
-    Gets User string input.
-    Run a while loop to collect a valid string from user
-    via the terminal, which must be the correct value of
-    'Create' or 'Login'. The loop will repeat until input is valid.
+    Start Menu Terminal. Prompts users to enter where
+    they wish to go. Calls the Validate Mode function to
+    check user input.
+
+    - If input 'CREATE' is detected. Calls the 'create_account' function.
+    - If input 'LOGIN' is detected. Calls the 'login_account' function.
+    - If input 'RECOVER' is detected. Calls the 'acc_recovery' function.
     """
     print(Fore.YELLOW + "Eternity Holdings the #1 App"
           " to automate your banking needs!\n")
@@ -673,8 +676,9 @@ def validate_mode(mode_str, valid_mode_input):
     """
     Checks if the value of mode_str is found in
     the valid_modes list.
-    -If the value is found, it returns True.
-    -If the value is not, it prints a statement and returns False.
+
+    - If the value is found, it returns True.
+    - If the value is not, it prints a statement and returns False.
     """
     # Checks if string equals to the respective values
     if mode_str in valid_mode_input:
@@ -689,7 +693,7 @@ def main():
     """
     Run all program functions.
     """
-    login_or_create()
+    start_menu()
 
 
 if __name__ == "__main__":
