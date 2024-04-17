@@ -218,11 +218,40 @@ def validate_dob(date_of_birth, first_name):
 
 def create_account():
     """
-    Collects DOB, First and Last Name data from user input.
-    Calls validate_dob fuction if True code breaks, if false
-    while loop restarts.
+    Create Account Terminal. Prompts users with an option to return
+    to the Main menu. Collects DOB, First and Last Name data from user input.
+    Calls validate_dob fuction.
+
+    -If returns True code call confirm function.
+    -If returns False while loop repeats.
     """
-    print(Fore.YELLOW + "Welcome to the Account Creator.")
+    print(Fore.YELLOW + "Welcome to the Account Creator.\n")
+
+    print(Style.RESET_ALL + "If you wish to continue with Account Creation"
+          " please enter 'PROCEED'.")
+    print(Fore.RED + "To return to the Main Menu please Enter 'EXIT'.\n")
+
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["EXIT", "PROCEED"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "EXIT":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
+                print("Sending to Main Menu...\n")
+                login_or_create()
+
+            elif mode_str == "PROCEED":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Account"
+                                   " Creation!")
+                print("Proceeding to Account Creation...\n")
+
+                break
+
     print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
 
     first_name = input(Style.RESET_ALL + "Please Enter First Name:\n")
@@ -245,9 +274,8 @@ def create_account():
 
 def login_user_bal(acc_num):
     """
-    Checks current logged in accounts
-    balance from Google Sheet and prints
-    result to Terminal.
+    Checks current logged in Account's associated
+    balance from Google Sheet and prints result to Terminal.
     """
     acc_num_list = get_sheet_data(3)
     acc_bal_list = get_sheet_data(6)
@@ -266,6 +294,9 @@ def update_acc_bal(user_amount, acc_num, add=True):
 
     -If add=True the current balance & user input add.
     -If add=False the current balance & user input subtract.
+
+    The value of that new number is returned back into the
+    Google sheet string format and updated on the sheet.
     """
     try:
         # Find the row index corresponding to the account number.
@@ -304,7 +335,13 @@ def update_acc_bal(user_amount, acc_num, add=True):
 
 def acc_depo_term(fname, acc_num):
     """
-    Account Deposit Terminal.
+    Account Deposit Terminal. Prompts user to input
+    'EXIT' or a numerical value to deposit to their account.
+
+    -If 'EXIT' the while loop ends returning to HUB.
+    -If not, try loop attempts to convert value using Money().
+    -If it cannot a ValueError triggers & loop begins again.
+    -If it can it calls update user balance function.
     """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
@@ -343,7 +380,13 @@ def acc_depo_term(fname, acc_num):
 
 def acc_withdraw_term(fname, acc_num):
     """
-    Account Withdraw Terminal.
+    Account Withdraw Terminal. Prompts user to input
+    'EXIT' or a numerical value to withdraw from their account.
+
+    -If 'EXIT' the while loop ends returning to HUB.
+    -If not, try loop attempts to convert value using Money().
+    -If it cannot a ValueError triggers & loop begins again.
+    -If it can it calls update user balance function.
     """
     clear()
     print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
@@ -382,8 +425,11 @@ def acc_withdraw_term(fname, acc_num):
 
 def acc_logout_confirm(fname, acc_num):
     """
-    Allows the user to return if they
-    did not want to logout
+    Log Out Confirmation. Prompts users to input 'YES' or 'NO'.
+    uses the Validate Mode function to check user input.
+
+    - If 'YES' the user will return to the Main Menu, logging out.
+    - If 'NO' the user will return back to the HUB.
     """
     print(Fore.YELLOW + f"{fname} are you sure you want to Log Out?\n")
     print(Style.RESET_ALL + "Please Enter 'YES' or 'NO'")
@@ -408,10 +454,17 @@ def acc_logout_confirm(fname, acc_num):
 
 def logged_in_hub(fname, acc_num):
     """
-    The Eternity Holding's main HUB
+    The Main HUB Terminal. Prompts users to enter where
+    they wish to go. Calls the Validate Mode function to
+    check user input.
+
+    - If input 'DEPOSIT' is detected. Sends users to deposit terminal.
+    - If input 'WITHDRAW' is detected. Sends users to withdraw terminal.
+    - If input 'BALANCE' is detected. Calls login_user_bal function.
+    - If input 'LOGOUT' is detected. Calls acc_logout_confirm function.
     """
     print(Fore.YELLOW + f"\nWelcome {fname} you are now"
-                        " at the Eternity Bank HUB.")
+                        " at the Eternity Holdings HUB.")
     print(Fore.CYAN + "From here you have access to all our services."
           " See below for our current available options:\n")
 
@@ -453,17 +506,42 @@ def logged_in_hub(fname, acc_num):
 
 def login_account():
     """
-    Collects User input for their Account.
+    Login Account Terminal. Prompts users with an option to return
+    to the Main menu. Collects User input for their Account.
     In the if statement it calls the locate_acc function,
     to compare user input with stored data.
 
-    -If True the loop breaks and calls logged_in_menu.
-    -If False it returns user to the start.
+    - If True the loop breaks and calls logged_in_menu.
+    - If False it returns user to the start.
     """
-    print(Fore.YELLOW + "Welcome to the Account Login.")
-    print(Fore.CYAN + "You're now at the Account Login Terminal.\n")
+    print(Fore.YELLOW + "Welcome to Account Login.\n")
+    print(Style.RESET_ALL + "If you wish to continue with Account Login"
+          " please enter 'PROCEED'.")
+    print(Fore.RED + "To return to the Main Menu please Enter 'EXIT'.\n")
+
+# Creates a list of expected strings for validate function
+    valid_mode_input = ["EXIT", "PROCEED"]
 
     while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "EXIT":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
+                print("Sending to Main Menu...\n")
+                login_or_create()
+
+            elif mode_str == "PROCEED":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Account"
+                                   " Login!")
+                print("Proceeding to Account Login...\n")
+
+                break
+
+    while True:
+        print(Fore.CYAN + "You're now at the Account Login Terminal.\n")
         # Assigns a variable to each user input
         fname = input(Style.RESET_ALL + "Please Enter First Name:\n")
         lname = input("Please Enter Last Name:\n")
@@ -480,15 +558,15 @@ def login_account():
             clear()
             print(Fore.RED + "Sorry your search does not match"
                   " any Account in our database.")
-            print("Returning to Main menu...\n")
+            print("Returning to Main Menu...\n")
             login_or_create()
 
 
 def locate_acc(fname, lname, acc_num, pin_num):
     """
     Extracts corresponding data from worksheet.
-    Creates a list of the data. Compares the data,
-    with user input.
+    Creates a list of the data. Compares the data with user input.
+
     - If the values match, returns True.
     - If not, returns False.
     """
@@ -513,6 +591,42 @@ def locate_acc(fname, lname, acc_num, pin_num):
     return False
 
 
+def acc_recovery():
+    """
+    Account Recovery Terminal.
+    """
+    print(Fore.YELLOW + "Welcome to Account Recovery.\n")
+    print(Style.RESET_ALL + "If you have lost your Account Number or Pin Code"
+          " please enter 'PROCEED'.")
+    print(Fore.RED + "To return to the Main Menu please Enter 'EXIT'.\n")
+
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["EXIT", "PROCEED"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "EXIT":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
+                print("Sending to Main Menu...\n")
+                login_or_create()
+
+            elif mode_str == "PROCEED":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} to Account"
+                                   " Recovery!")
+                print("Proceeding to Account recovery...\n")
+
+                break
+
+    clear()
+    print(Fore.RED + "We're sorry but this feature has not yet been finished.")
+    print(Fore.GREEN + "Returning to the Main Menu...\n")
+    login_or_create()
+
+
 def login_or_create():
     """
     Gets User string input.
@@ -520,13 +634,15 @@ def login_or_create():
     via the terminal, which must be the correct value of
     'Create' or 'Login'. The loop will repeat until input is valid.
     """
-    print(Fore.YELLOW + "Welcome to the Main Menu.")
+    print(Fore.YELLOW + "Eternity Holdings the #1 App"
+          " to automate your banking needs!\n")
+    print("Welcome to the Main Menu.")
     print(Fore.CYAN + "You're now at the Create & Login Terminal.\n")
     print(Style.RESET_ALL + "To proceed with your banking experience,"
-          " please choose 'CREATE' or 'LOGIN'.")
+          " please choose 'CREATE', 'LOGIN', 'RECOVER'.")
 
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["CREATE", "LOGIN"]
+    valid_mode_input = ["CREATE", "LOGIN", "RECOVER"]
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -543,6 +659,12 @@ def login_or_create():
                 print(Fore.GREEN + f"You chose to {mode_str} to an Account!")
                 print("Sending to Account Login...\n")
                 login_account()
+
+            elif mode_str == "RECOVER":
+                clear()
+                print(Fore.GREEN + f"You chose to {mode_str} your Account!")
+                print("Sending to Account Recovery...\n")
+                acc_recovery()
 
             break
 
@@ -571,6 +693,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print(Fore.YELLOW + "\nEternity Holdings the #1 App"
-          " to automate your banking needs!\n")
     main()
