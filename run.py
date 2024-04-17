@@ -13,6 +13,7 @@ from colorama import init, Fore, Style
 import os
 import datetime
 import random
+import re
 from money import Money
 
 import gspread
@@ -95,6 +96,9 @@ def number_generator(first_name, last_name, date_of_birth):
     Checks generated numbers with sheet data to
     prevent duplicates, generates Account balance
     & calls 'update_sheet_data' function.
+
+    Creates a empty user balance with Money().
+    Returns values back to the function that called this one.
     """
     # Collects Sheet Data from Columns 3 and 4 & converts them to integers.
     exist_acc_num = [int(value) for value in get_sheet_data(3) if value]
@@ -173,7 +177,8 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
                 new_acc_values = number_generator(first_name, last_name,
                                                   date_of_birth)
                 nine_digit_num, four_digit_num, user_bal = new_acc_values
-                create_backup_setup()
+                acc_num = nine_digit_num
+                create_backup_setup(acc_num)
 
                 print(Fore.GREEN + "Creating your new Account"
                                    " with Eternity Holdings...\n")
@@ -196,9 +201,104 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
                 break
 
 
-def create_backup_setup():
+def update_backup_data(acc_num, user_location, user_email, user_recovery_pass):
+    """
+    Updates Google Sheet with Account Recovery Backup data.
+    Converts the 'acc_num' to a string so it can be stripped to
+    prevent data type errors.
+
+    Locates the associated Account and passes the Backup data
+    to the corresponding sheet cells. Returns to the function
+    it was called by.
+    """
+    # Converts acc_num value into a string if not already.
+    acc_num = str(acc_num)
+
+    # Find the row index corresponding to the account number.
+    all_rows = ACCOUNTLIST.get_all_values()
+    acc_num_list = [row[2].strip() for row in all_rows]
+    acc_num = acc_num.strip()
+    account_for_backup = acc_num_list.index(acc_num) + 1
+
+    # Update the specific cells in the identified row with the provided data.
+    ACCOUNTLIST.update_cell(account_for_backup, 7, user_location)
+    ACCOUNTLIST.update_cell(account_for_backup, 8, user_email)
+    ACCOUNTLIST.update_cell(account_for_backup, 9, user_recovery_pass)
+
+    print(Fore.GREEN + "Account Recovery Backup data updated...")
+    return
+
+
+def validate_email(email):
+    """
+    Email Validator for Account Recovery Backup.
+    Uses Import re to detect a specific email pattern.
+
+    - If the email value & the pattern match, returns True.
+    - If they do not match, returns False.
+    """
+    # Pattern for validating email address.
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
+
+def create_backup_confirm(acc_num,
+                          user_location,
+                          user_email,
+                          user_recovery_pass):
+    """
+    Account Backup Confirmation. Prints the user data to the terminal &
+    prompts the user to enter 'YES' or 'NO'.
+
+    - If user input is 'YES' it calls the 'update_backup_data' function &
+      returns to the function which called it.
+    - If user input is 'NO' the 'create_backup_setup' function is called &
+      the while loop breaks.
+    """
+    print(Fore.YELLOW + "\nHere are your entered Account Backup details:")
+    print(Style.RESET_ALL + f"Location: {user_location}")
+    print(f"Email: {user_email}")
+    print(f"Recovery Password: {user_recovery_pass}")
+
+    print(Fore.CYAN + "\nAre these details correct?"
+                      " Please Confirm YES or NO")
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["YES", "NO"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls validate_mode to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "YES":
+                clear()
+                print(Fore.GREEN + "Thank you for your confirmation...\n")
+                update_backup_data(acc_num, user_location, user_email,
+                                   user_recovery_pass)
+                return
+
+            elif mode_str == "NO":
+                clear()
+                print(Fore.RED + "No problem. Lets go back...")
+                create_backup_setup(acc_num)
+                break
+
+
+def create_backup_setup(acc_num):
     """
     Create Account Terminal Backup Setup.
+    Prompts the user to Enter 'YES', 'NO' or 'WHY'.
+
+    - If user input is 'YES' while loop breaks. Code outside loop proceeds.
+    - If user input is 'NO' the code returns to the function that called
+      this one.
+    - If 'WHY' the code prints statements and repeats the while loop.
+
+    Prompts the user with questions. Calls 'validate_email' on user email
+    input. Calls 'create_backup_confirm' & returns to the function that called
+    this one.
     """
     print(Fore.YELLOW + "Welcome to Account Creator.")
     print(Fore.CYAN + "You're at the Setup Account Backup Terminal\n")
@@ -212,7 +312,7 @@ def create_backup_setup():
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-        # Calls Mode Validation to check for correct input string
+        # Calls Mode Validation to check for correct input string.
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
                 clear()
@@ -237,11 +337,33 @@ def create_backup_setup():
 
     print(Fore.YELLOW + "Account Recovery Backup process has begun...\n")
 
-    print(Style.RESET_ALL + "Enter Country of Residence:\n")
-    location = input(Fore.GREEN + "Enter here:\n")
+    print(Style.RESET_ALL + "What is your Country of Residence?\n")
+    user_location = input(Fore.GREEN + "Enter here:\n").upper()
 
-    print(Style.RESET_ALL + "Enter Email Address:")
+    print(Style.RESET_ALL + "What is your Email Address?")
+    print(Fore.RED + "Please take note of format Example:"
+                     " 'example@email.com'\n")
 
+    while True:
+        user_email = input(Fore.GREEN + "Enter here:\n")
+        if validate_email(user_email):
+            break
+        else:
+            print(Fore.RED + f"The Email {user_email} is not the correct"
+                             " format. Please try again.")
+            continue
+
+    print(Style.RESET_ALL + "Create a Custom Recovery Password. It can be"
+                            " whatever you want. We reccomend it is something"
+                            " you will remember and is unique to you.\n")
+    user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+
+    clear()
+    create_backup_confirm(acc_num, user_location, user_email,
+                          user_recovery_pass)
+    print(Fore.GREEN + "Your Account Recovery Backup has been successfully"
+                       " updated!")
+    return
 
 
 def validate_dob(date_of_birth, first_name):
