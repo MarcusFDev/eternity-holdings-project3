@@ -817,6 +817,53 @@ def login_acc_checker(fname, lname, acc_num, pin_num):
     return False
 
 
+def acc_recovery_questions():
+    """
+    Account recovery Questions.
+    """
+    print(Style.RESET_ALL + "What is your Country of Residence?\n")
+    user_location = input(Fore.GREEN + "Enter here:\n").upper()
+
+    print(Style.RESET_ALL + "What is your Email Address?")
+    print(Fore.RED + "Please take note of format Example:'example@email.com'")
+
+    while True:
+        user_email = input(Fore.GREEN + "\nEnter here:\n")
+        if validate_email(user_email):
+            break
+        else:
+            print(Fore.RED + f"The Email {user_email} is not the correct"
+                             " format. Please try again.")
+            continue
+
+    print(Style.RESET_ALL + "What is your Account Recovery password?\n")
+    user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+
+    if get_backup_data(user_location, user_email, user_recovery_pass):
+        return
+    else:
+        print(Fore.RED + "The details you have entered do not match"
+                         " the details recorded in our database.\n")
+        print(Style.RESET_ALL + "Please Enter 'RETRY' to try again.")
+        print("Or Enter 'FORGOT' if you do not know these Recovery"
+              " details.")
+
+        valid_mode_input = ["RETRY", "FORGOT"]
+        while True:
+            mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+            # Calls Mode Validation to check for correct input string
+            if validate_mode(mode_str, valid_mode_input):
+                if mode_str == "RETRY":
+                    clear()
+                    print(Fore.GREEN + "No problem. Loading Questions...\n")
+                    acc_recovery_questions()
+
+                elif mode_str == "FORGOT":
+                    clear()
+                    forgot_acc_recovery()
+
+
 def acc_recovery():
     """
     Account Recovery Terminal.
