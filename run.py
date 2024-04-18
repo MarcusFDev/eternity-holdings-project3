@@ -229,6 +229,45 @@ def update_backup_data(acc_num, user_location, user_email, user_recovery_pass):
     return
 
 
+def get_backup_data(user_location, user_email, user_recovery_pass):
+    """
+    Obtain Google Sheet data for Backup Recovery.
+    """
+    print(Fore.GREEN + "Obtaining Account Backup data...")
+
+    ACCOUNTLIST = SHEET.worksheet('accountlist')
+    # Gets the data from all sheet rows.
+    all_rows = ACCOUNTLIST.get_all_values()
+
+    # Determine the end index dynamically
+    end_index = min(9, len(all_rows))
+
+    for row in all_rows[1:end_index]:
+        # Check if any cell in the row is empty.
+        if any(cell == '' for cell in row):
+            print(Fore.RED + "Data does not match any data found.")
+            return False
+
+        # Handle the row as a whole list
+        sheet_user_location = row[6] if len(row) > 6 else ''
+        sheet_user_email = row[7] if len(row) > 7 else ''
+        sheet_user_recovery_pass = row[8] if len(row) > 8 else ''
+
+        # Converts the passed data values to strings.
+        # Checks if all the user input matches the data in the sheet.
+        if (
+            str(user_location) == sheet_user_location and
+            str(user_email) == sheet_user_email and
+            str(user_recovery_pass) == sheet_user_recovery_pass
+        ):
+            print("Match Found")
+            return True
+
+    # If no match found after checking all rows
+    print(Fore.RED + "Data does not match any data found.")
+    return False
+
+
 def validate_email(email):
     """
     Email Validator for Account Recovery Backup.
@@ -824,33 +863,17 @@ def acc_recovery():
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
                 clear()
-                print(Fore.GREEN + "Great News we can continue to recover your"
-                                   " Eternity Holdings Account!")
-                print("Proceeding...\n")
-
+                print(Fore.CYAN + "Great News we can continue to recover your"
+                                  " Eternity Holdings Account!")
+                print(Fore.GREEN + "Proceeding...\n")
                 break
 
             elif mode_str == "NO":
                 clear()
-                print(Fore.RED + "We're Sorry but without your backup"
-                                 " information we cannot help you"
-                                 " in the Account Recovery Terminal.\n")
-                print(Fore.CYAN + "Please Contact Customer Support at"
-                                  " marcusf.dev@gmail.com\n")
-                print(Style.RESET_ALL + "When you're ready please Enter"
-                                        " 'PROCEED'")
+                forgot_acc_recovery()
 
-                valid_mode_input = ["PROCEED"]
-                while True:
-                    mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-
-                    # Calls Mode Validation to check for correct input string
-                    if validate_mode(mode_str, valid_mode_input):
-                        if mode_str == "PROCEED":
-                            clear()
-                            print(Fore.GREEN + "Returning to the Main"
-                                               " menu...\n")
-                            start_menu()
+    acc_recovery_questions()
+    print("At the end of the code...")
 
 
 def start_menu():
