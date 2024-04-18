@@ -817,6 +817,30 @@ def login_acc_checker(fname, lname, acc_num, pin_num):
     return False
 
 
+def forgot_acc_recovery():
+    """
+    If a user forgets their Account recovery details.
+    """
+    print(Fore.RED + "We're Sorry but without your backup information we"
+                     " cannot help you in the Account Recovery Terminal.\n")
+    print(Fore.CYAN + "Please Contact Customer Support at"
+                      " marcusf.dev@gmail.com\n")
+
+    print(Style.RESET_ALL + "When you're ready please Enter 'RETURN' to"
+                            " return to the Main Menu.")
+
+    valid_mode_input = ["RETURN"]
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "RETURN":
+                clear()
+                print(Fore.GREEN + "Returning to the Main menu...\n")
+                start_menu()
+
+
 def acc_recovery_questions():
     """
     Account recovery Questions.
