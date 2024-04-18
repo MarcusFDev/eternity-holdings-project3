@@ -245,13 +245,15 @@ def get_backup_data(user_location, user_email, user_recovery_pass):
     for row in all_rows[1:end_index]:
         # Check if any cell in the row is empty.
         if any(cell == '' for cell in row):
-            print(Fore.RED + "Data does not match any data found.")
+            print(Fore.RED + "Data does not match any Account found.")
             return False
 
         # Handle the row as a whole list
         sheet_user_location = row[6] if len(row) > 6 else ''
         sheet_user_email = row[7] if len(row) > 7 else ''
         sheet_user_recovery_pass = row[8] if len(row) > 8 else ''
+
+        backup_acc_num = row[2] if len(row) > 2 else ''
 
         # Converts the passed data values to strings.
         # Checks if all the user input matches the data in the sheet.
@@ -260,11 +262,12 @@ def get_backup_data(user_location, user_email, user_recovery_pass):
             str(user_email) == sheet_user_email and
             str(user_recovery_pass) == sheet_user_recovery_pass
         ):
-            print("Match Found")
+            print("Account Found.")
+            all_acc_detail(backup_acc_num)
             return True
 
     # If no match found after checking all rows
-    print(Fore.RED + "Data does not match any data found.")
+    print(Fore.RED + "Data does not match any Account found.")
     return False
 
 
@@ -841,6 +844,31 @@ def forgot_acc_recovery():
                 start_menu()
 
 
+def all_acc_detail(backup_acc_num):
+    """
+    Prints all Account data.
+    """
+    ACCOUNTLIST = SHEET.worksheet('accountlist')
+    # Gets the data from all sheet rows.
+    all_rows = ACCOUNTLIST.get_all_values()
+    # Iterate through all rows
+    for row in all_rows:
+        # Check all rows account number matches the provided backup_acc_num
+        if len(row) > 2 and row[2] == backup_acc_num:
+            # Print the data from columns 1 to 9 in the matched row
+            print(Fore.CYAN + "Here are your Account details:\n")
+            print(Style.RESET_ALL + "First Name:", row[0])
+            print("Last Name:", row[1])
+            print("Account Number:", row[2])
+            print("Pin Number:", row[3])
+            print("Date of Birth:", row[4])
+            print(Fore.CYAN + "\nYour Account recovery Backup details:\n")
+            print(Style.RESET_ALL + "Location:", row[6])
+            print("Email Address:", row[7])
+            print("Recovery Password:", row[8])
+            return
+
+
 def acc_recovery_questions():
     """
     Account recovery Questions.
@@ -862,6 +890,8 @@ def acc_recovery_questions():
 
     print(Style.RESET_ALL + "What is your Account Recovery password?\n")
     user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+
+    clear()
 
     if get_backup_data(user_location, user_email, user_recovery_pass):
         return
@@ -944,7 +974,25 @@ def acc_recovery():
                 forgot_acc_recovery()
 
     acc_recovery_questions()
-    print("At the end of the code...")
+    print(Fore.YELLOW + "\nWe reccomend changing your Custom Password reguarly"
+                        " for an extra layer of protection.")
+    print(Fore.RED + "If you believe your Account is at risk of being"
+                     " compromised, please Login & request a pin change.")
+    print("Otherwise contact support at: 'marcusf.dev@gmail.com'\n")
+
+    print(Style.RESET_ALL + "When you're ready please Enter 'RETURN' to leave"
+                            " to the main menu.")
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["RETURN"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "RETURN":
+                clear()
+                print(Fore.GREEN + "Returning to Main Menu...\n")
+                start_menu()
 
 
 def start_menu():
