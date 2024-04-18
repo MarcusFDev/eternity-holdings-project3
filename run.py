@@ -680,6 +680,58 @@ def acc_logout_confirm(fname, acc_num):
                 logged_in_hub(fname, acc_num)
 
 
+def acc_change_pin():
+    """
+    Account Change Pin
+    """
+    print(Fore.RED + "We're sorry, the Account Pin change feature is not"
+                     " finished.")
+    print("Returning to Options Terminal...\n")
+    return
+
+
+def acc_options(fname, acc_num):
+    """
+    Account Options HUB
+    """
+    clear()
+    backup_acc_num = acc_num
+
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["RECOVERY", "CHANGE PIN", "RETURN"]
+
+    while True:
+        print(Fore.YELLOW + f"Welcome {fname} here are More Options to choose"
+                            " from.")
+        print(Fore.CYAN + "Please Enter one of the following:\n")
+
+        print(Style.RESET_ALL + "Enter 'RECOVERY' to check & update or if you"
+                                " have not already; create you Account"
+                                " Recovery Backup.\n")
+
+        print("Enter 'CHANGE PIN' to change your account pin number.\n")
+
+        print("Enter 'RETURN' to go back to the Main HUB Terminal.\n")
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "RECOVERY":
+                clear()
+                all_acc_detail(backup_acc_num)
+                print("Going to the Account Recovery Backup terminal!\n")
+                create_backup_setup(acc_num)
+
+            elif mode_str == "CHANGE PIN":
+                clear()
+                print("Going to the Account Pin Change terminal!\n")
+                acc_change_pin()
+
+            elif mode_str == "RETURN":
+                clear()
+                print("Returning back to the HUB...")
+                logged_in_hub(fname, acc_num)
+
+
 def logged_in_hub(fname, acc_num):
     """
     The Main HUB Terminal. Prompts users to enter where
@@ -697,12 +749,13 @@ def logged_in_hub(fname, acc_num):
           " See below for our current available options:\n")
 
     print(Style.RESET_ALL + "Enter 'DEPOSIT' to go to"
-                            "the Deposit funds terminal.")
+                            " the Deposit funds terminal.")
     print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
     print("Enter 'BALANCE' to check your current account balance.")
+    print("Enter 'OPTIONS' to got to the more options terminal.")
     print("Enter 'LOGOUT' to go back to the Main Menu.\n")
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "LOGOUT"]
+    valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "OPTIONS", "LOGOUT"]
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -723,6 +776,11 @@ def logged_in_hub(fname, acc_num):
                 print(Fore.CYAN + f"Hello {fname} see below for your balance:")
                 login_user_bal(acc_num)
                 logged_in_hub(fname, acc_num)
+
+            elif mode_str == "OPTIONS":
+                clear()
+                print("Going to More Options terminal!")
+                acc_options(fname, acc_num)
 
             elif mode_str == "LOGOUT":
                 clear()
