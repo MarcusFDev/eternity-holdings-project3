@@ -362,7 +362,7 @@ def create_backup_setup(acc_num):
 
     print(Style.RESET_ALL + "Do you want to set up or change your Account"
                             " Recovery Backup?")
-    print(" Please Enter 'YES' or 'NO'.\n")
+    print("Please Enter 'YES' or 'NO'.\n")
     print(Fore.RED + "If your not sure what a Account Recovery Backup is"
                      " please enter 'WHY'.")
 
@@ -695,14 +695,66 @@ def acc_logout_confirm(fname, acc_num):
                 logged_in_hub(fname, acc_num)
 
 
-def acc_change_pin():
+def acc_change_pin(acc_num):
     """
     Account Change Pin terminal.
+    Prompts the user with the option to return to function that
+    called this one. If 'YES' the function code continues.
+
+    Finds the associated account details with the acc_num value.
+    Calls the 'acc_pin_generator' function and grabs the returned value.
+    Updates the New Pin on the sheet for the corresponding acc_num.
+
+    Prints the new Account Pin to terminal and prompts the user the option
+    to Exit.
     """
-    print(Fore.RED + "We're sorry, the Account Pin change feature is not"
-                     " finished.")
-    print("Returning to Options Terminal...\n")
-    return
+    print(Fore.YELLOW + "Welcome to the Account Pin Change terminal.")
+    print(Fore.CYAN + "Are you sure you want to Request a Pin change?\n")
+    print(Style.RESET_ALL + "Please Enter 'YES' or 'NO'.")
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["YES", "NO"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "YES":
+                clear()
+                print(Fore.GREEN + "You chose to change your Account Pin!")
+                break
+
+            elif mode_str == "NO":
+                clear()
+                print(Fore.GREEN + "No problem, returning to Options Menu..."
+                                   "\n")
+                return
+
+    # Find the row index corresponding to the account number.
+    all_rows = ACCOUNTLIST.get_all_values()
+    acc_num_list = [row[2].strip() for row in all_rows]
+    acc_num = acc_num.strip()
+    logged_in_user_index = acc_num_list.index(acc_num) + 1
+
+    new_pin_num = acc_pin_generator()
+    print(Fore.GREEN + "Changing your Account Pin...\n")
+    ACCOUNTLIST.update_cell(logged_in_user_index, 4, new_pin_num)
+
+    print(Fore.YELLOW + "Your New Account Pin is:", new_pin_num)
+    print(Fore.RED + "Reminder: Please keep record of your new pin as you will"
+                     " need it to log back in.\n")
+
+    print(Fore.CYAN + "When you're ready, Please enter 'EXIT' to return to"
+                      " the More Options.\n")
+    valid_mode_input = ["EXIT"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls validate_mode to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "EXIT":
+                clear()
+                print(Fore.GREEN + "Returning to Options Menu...")
+                return
 
 
 def acc_options(fname, acc_num):
@@ -730,9 +782,9 @@ def acc_options(fname, acc_num):
 
         print(Style.RESET_ALL + "Enter 'RECOVERY' to check & update or if you"
                                 " have not already; create you Account"
-                                " Recovery Backup.\n")
+                                " Recovery Backup.")
 
-        print("Enter 'CHANGE PIN' to request a account pin number change.\n")
+        print("Enter 'CHANGE PIN' to request a account pin number change.")
 
         print("Enter 'RETURN' to go back to the Main HUB Terminal.\n")
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -747,11 +799,11 @@ def acc_options(fname, acc_num):
             elif mode_str == "CHANGE PIN":
                 clear()
                 print("Going to the Account Pin Change terminal!\n")
-                acc_change_pin()
+                acc_change_pin(acc_num)
 
             elif mode_str == "RETURN":
                 clear()
-                print("Returning back to the HUB...")
+                print("Returning back to the HUB...\n")
                 logged_in_hub(fname, acc_num)
 
 
