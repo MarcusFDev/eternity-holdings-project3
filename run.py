@@ -47,8 +47,8 @@ def clear():
 def update_sheet_data(first_name,
                       last_name,
                       date_of_birth,
-                      nine_digit_num,
-                      four_digit_num,
+                      generated_acc_num,
+                      generated_pin_num,
                       user_bal,
                       worksheet):
     """
@@ -61,8 +61,8 @@ def update_sheet_data(first_name,
     fname = first_name
     lname = last_name
     bdate = date_of_birth
-    acc_num = nine_digit_num
-    pin_num = four_digit_num
+    acc_num = generated_acc_num
+    pin_num = generated_pin_num
     # Converts Money value to string
     user_balance = str(user_bal)
     # Grabs the worksheet to send data to
@@ -87,39 +87,46 @@ def get_sheet_data(column_index):
     return column_values
 
 
-def number_generator(first_name, last_name, date_of_birth):
+def acc_pin_generator():
     """
-    Generates random 4 and 9 digit number.
-    Calls 'get_sheet_data' function to collect data
-    from Google Sheet. Coverts the data to integers.
+    Generates a 4 digit number to be used as a Account Pin.
+    Returns that value to the function that called this one.
+    """
+    # Generates a random 4 digit number.
+    return random.randint(1000, 9999)
 
-    Checks generated numbers with sheet data to
-    prevent duplicates, generates Account balance
-    & calls 'update_sheet_data' function.
+
+def acc_num_generator(first_name, last_name, date_of_birth):
+    """
+    Generates random 9 digit number to be used as a Account Number.
+    Calls 'get_sheet_data' function to collect data from Google Sheet.
+    Converts that data from strings to integers.
+
+    Compares generated account number with sheet data to
+    prevent duplicates. Calls 'four_digit_num' function then generates
+    Account balance & calls 'update_sheet_data' function.
 
     Creates a empty user balance with Money().
     Returns values back to the function that called this one.
     """
     # Collects Sheet Data from Columns 3 and 4 & converts them to integers.
     exist_acc_num = [int(value) for value in get_sheet_data(3) if value]
-    exist_pin_num = [int(value) for value in get_sheet_data(4) if value]
 
     while True:
         # Generates a random 9 digit number.
-        nine_digit_num = random.randint(100000000, 999999999)
+        generated_acc_num = random.randint(100000000, 999999999)
         # Generates a random 4 digit number.
-        four_digit_num = random.randint(1000, 9999)
+        generated_pin_num = acc_pin_generator()
 
         # Checks if generated num already exists in Google sheet.
-        if (nine_digit_num not in exist_acc_num) and \
-           (four_digit_num not in exist_pin_num):
+        if (generated_acc_num not in exist_acc_num):
 
             user_bal = Money(amount='0.00', currency='EUR')
             update_sheet_data(first_name, last_name, date_of_birth,
-                              nine_digit_num, four_digit_num,
+                              generated_acc_num, generated_pin_num,
                               user_bal, 'accountlist')
 
-            return (nine_digit_num, four_digit_num, user_bal)
+            return (generated_acc_num, generated_pin_num, user_bal)
 
 
 def acc_create_finished():
@@ -151,7 +158,7 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
     Prints the user inputs to the terminal & prompts the user to
     confirm their details before an account is made.
 
-    - If user input is 'YES' the 'number_generator' & 'acc_create_finished'
+    - If user input is 'YES' the 'acc_num_generator' & 'acc_create_finished'
       functions are called.
     - If user input is 'NO' the 'create_account' function is called.
     """
@@ -174,10 +181,10 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
                 clear()
                 print(Fore.GREEN + f"Thank you {first_name} for your"
                                    " confirmation...\n")
-                new_acc_values = number_generator(first_name, last_name,
-                                                  date_of_birth)
-                nine_digit_num, four_digit_num, user_bal = new_acc_values
-                acc_num = nine_digit_num
+                new_acc_values = acc_num_generator(first_name, last_name,
+                                                   date_of_birth)
+                generated_acc_num, generated_pin_num, user_bal = new_acc_values
+                acc_num = generated_acc_num
                 create_backup_setup(acc_num)
 
                 print(Fore.GREEN + "Creating your new Account"
@@ -186,8 +193,8 @@ def acc_create_confirm(first_name, last_name, date_of_birth):
                 print(Style.RESET_ALL + f"First Name: {first_name}")
                 print(f"Last Name: {last_name}")
                 print(f"Date of Birth: {date_of_birth}")
-                print("\nYour New Account Number:", nine_digit_num)
-                print("Your New Account PIN Number:", four_digit_num)
+                print("\nYour New Account Number:", generated_acc_num)
+                print("Your New Account PIN Number:", generated_pin_num)
                 print(Fore.RED + "\nPlease take note of these details as"
                                  " you will need them to access your Account"
                                  " in Login.")
