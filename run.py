@@ -225,13 +225,21 @@ def update_backup_data(acc_num, user_location, user_email, user_recovery_pass):
     ACCOUNTLIST.update_cell(account_for_backup, 8, user_email)
     ACCOUNTLIST.update_cell(account_for_backup, 9, user_recovery_pass)
 
-    print(Fore.GREEN + "Account Recovery Backup data updated...")
+    print(Fore.GREEN + "Account Recovery Backup has been sucessfully updated!")
     return
 
 
 def get_backup_data(user_location, user_email, user_recovery_pass):
     """
     Obtain Google Sheet data for Backup Recovery.
+    Collects data of rows 1-9 specifically. Checks for empty
+    sheet cells and returns False if found.
+
+    Otherwise targets data from rows 7-9. Converts the passed
+    user inputs into strings and compares the data from the sheet.
+
+    When match is found grabs the asscoiated account number and calls
+    'all_acc_detail' function passings it the account number.
     """
     print(Fore.GREEN + "Obtaining Account Backup data...")
 
@@ -345,8 +353,9 @@ def create_backup_setup(acc_num):
     print(Fore.YELLOW + "Welcome to Account Creator.")
     print(Fore.CYAN + "You're at the Setup Account Backup Terminal\n")
 
-    print(Style.RESET_ALL + "Do you want to set up your Account Recovery"
-                            " Backup? Please Enter 'YES' or 'NO'\n")
+    print(Style.RESET_ALL + "Do you want to set up or change your Account"
+                            " Recovery Backup?")
+    print(" Please Enter 'YES' or 'NO'.\n")
     print(Fore.RED + "If your not sure what a Account Recovery Backup is"
                      " please enter 'WHY'.")
 
@@ -362,9 +371,9 @@ def create_backup_setup(acc_num):
                 break
             elif mode_str == "NO":
                 clear()
-                print(Fore.RED + "You chose not to set up your Account"
-                                 " Recovery Backup.")
-                print(Fore.GREEN + "Returning back...")
+                print(Fore.RED + "You chose not to set up or change your"
+                                 " Account Recovery Backup.")
+                print(Fore.GREEN + "Returning back...\n")
                 return
 
             elif mode_str == "WHY":
@@ -398,13 +407,12 @@ def create_backup_setup(acc_num):
     print(Style.RESET_ALL + "Create a Custom Recovery Password. It can be"
                             " whatever you want. We reccomend it is something"
                             " you will remember and is unique to you.\n")
+    print(Fore.CYAN + "Watch out as it will be case sensitive!\n")
     user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
 
     clear()
     create_backup_confirm(acc_num, user_location, user_email,
                           user_recovery_pass)
-    print(Fore.GREEN + "Your Account Recovery Backup has been successfully"
-                       " updated!")
     return
 
 
@@ -682,7 +690,7 @@ def acc_logout_confirm(fname, acc_num):
 
 def acc_change_pin():
     """
-    Account Change Pin
+    Account Change Pin terminal.
     """
     print(Fore.RED + "We're sorry, the Account Pin change feature is not"
                      " finished.")
@@ -692,7 +700,15 @@ def acc_change_pin():
 
 def acc_options(fname, acc_num):
     """
-    Account Options HUB
+    Account More Options terminal.
+    Prints statements to the terminal and prompts the user to input
+    where they want to proceed to.
+
+    - If user input of 'RECOVERY' is detected, 'all_acc_detail' &
+      'create_backup_setup' functions are called.
+    - If user input of 'CHANGE PIN' is detected, 'acc_change_pin' function is
+      called.
+    - If 'RETURN' is detected, 'logged_in_hub' function is called.
     """
     clear()
     backup_acc_num = acc_num
@@ -709,7 +725,7 @@ def acc_options(fname, acc_num):
                                 " have not already; create you Account"
                                 " Recovery Backup.\n")
 
-        print("Enter 'CHANGE PIN' to change your account pin number.\n")
+        print("Enter 'CHANGE PIN' to request a account pin number change.\n")
 
         print("Enter 'RETURN' to go back to the Main HUB Terminal.\n")
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -741,9 +757,10 @@ def logged_in_hub(fname, acc_num):
     - If input 'DEPOSIT' is detected. Calls the 'acc_deposit' function.
     - If input 'WITHDRAW' is detected. Calls the 'acc_withdrawal' function.
     - If input 'BALANCE' is detected. Calls 'login_user_bal' function.
-    - If input 'LOGOUT' is detected. Calls 'acc_logout_confirm' function.
+    - If input 'MORE OPTIONS' is detected. Calls 'acc_options' function.
+    - If input 'LOG OUT' is detected. Calls 'acc_logout_confirm' function.
     """
-    print(Fore.YELLOW + f"\nWelcome {fname} you are now"
+    print(Fore.YELLOW + f"Welcome {fname} you are now"
                         " at the Eternity Holdings HUB.")
     print(Fore.CYAN + "From here you have access to all our services."
           " See below for our current available options:\n")
@@ -751,11 +768,13 @@ def logged_in_hub(fname, acc_num):
     print(Style.RESET_ALL + "Enter 'DEPOSIT' to go to"
                             " the Deposit funds terminal.")
     print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
-    print("Enter 'BALANCE' to check your current account balance.")
-    print("Enter 'OPTIONS' to got to the more options terminal.")
-    print("Enter 'LOGOUT' to go back to the Main Menu.\n")
+    print("Enter 'BALANCE' to check your current account balance.\n")
+
+    print("Or Enter 'MORE OPTIONS' to load more options.")
+    print("To Log Out of this Account Enter 'LOG OUT'.\n")
     # Creates a list of expected strings for validate function
-    valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "OPTIONS", "LOGOUT"]
+    valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "MORE OPTIONS",
+                        "LOG OUT"]
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -777,17 +796,14 @@ def logged_in_hub(fname, acc_num):
                 login_user_bal(acc_num)
                 logged_in_hub(fname, acc_num)
 
-            elif mode_str == "OPTIONS":
+            elif mode_str == "MORE OPTIONS":
                 clear()
-                print("Going to More Options terminal!")
+                print("Loading More Options...")
                 acc_options(fname, acc_num)
 
-            elif mode_str == "LOGOUT":
+            elif mode_str == "LOG OUT":
                 clear()
                 acc_logout_confirm(fname, acc_num)
-
-            else:
-                print(f"The Input of {mode_str} is incorrect.")
 
 
 def login_account():
@@ -880,7 +896,12 @@ def login_acc_checker(fname, lname, acc_num, pin_num):
 
 def forgot_acc_recovery():
     """
-    If a user forgets their Account recovery details.
+    This function is called by 'acc_recovery_questions' and
+    'acc_recovery'. Prints statements to terminal.
+    Prompts the user to Enter 'RETURN' utilizing the 'validate_mode'
+    function.
+
+    - If user input is True, 'start_menu' function is called.
     """
     print(Fore.RED + "We're Sorry but without your backup information we"
                      " cannot help you in the Account Recovery Terminal.\n")
@@ -904,7 +925,12 @@ def forgot_acc_recovery():
 
 def all_acc_detail(backup_acc_num):
     """
-    Prints all Account data.
+    When 'all_acc_detail' is called, it collects all Google Sheet
+    data and compares the sheet account number with passed value
+    of 'backup_acc_num'.
+
+    Once Account is found, gets the associated data in that row.
+    Prints that data to the terminal and returns to the function call.
     """
     ACCOUNTLIST = SHEET.worksheet('accountlist')
     # Gets the data from all sheet rows.
@@ -929,48 +955,59 @@ def all_acc_detail(backup_acc_num):
 
 def acc_recovery_questions():
     """
-    Account recovery Questions.
+    Account Recovery Backup Questions. When called the user is prompt with
+    questions. Uses 'validate_email' to obtain a correct email format.
+    Calls 'get_backup_data' function passing it user values.
+
+    - If that function returns True, this returns to the function call.
+    - If False, function code continues:
+
+    Prompts user with a question.
+
+    - If user input is 'RETRY' code wraps back to start of questions.
+    - If 'FORGOT' the 'forgot_acc_recovery' function is called.
     """
-    print(Style.RESET_ALL + "What is your Country of Residence?\n")
-    user_location = input(Fore.GREEN + "Enter here:\n").upper()
-
-    print(Style.RESET_ALL + "What is your Email Address?")
-    print(Fore.RED + "Please take note of format Example:'example@email.com'")
-
     while True:
-        user_email = input(Fore.GREEN + "\nEnter here:\n")
-        if validate_email(user_email):
-            break
-        else:
-            print(Fore.RED + f"The Email {user_email} is not the correct"
-                             " format. Please try again.")
-            continue
+        print(Style.RESET_ALL + "What is your Country of Residence?\n")
+        user_location = input(Fore.GREEN + "Enter here:\n").upper()
 
-    print(Style.RESET_ALL + "What is your Account Recovery password?\n")
-    user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+        print(Style.RESET_ALL + "What is your Email Address?")
+        print(Fore.RED + "Please take note of format Example:'example@email."
+                         "com'")
 
-    clear()
-
-    if get_backup_data(user_location, user_email, user_recovery_pass):
-        return
-    else:
-        print(Fore.RED + "The details you have entered do not match"
-                         " the details recorded in our database.\n")
-        print(Style.RESET_ALL + "Please Enter 'RETRY' to try again.")
-        print("Or Enter 'FORGOT' if you do not know these Recovery"
-              " details.")
-
-        valid_mode_input = ["RETRY", "FORGOT"]
         while True:
+            user_email = input(Fore.GREEN + "\nEnter here:\n")
+            if validate_email(user_email):
+                break
+            else:
+                print(Fore.RED + f"The Email {user_email} is not the correct"
+                                 " format. Please try again.")
+                continue
+
+        print(Style.RESET_ALL + "What is your Account Recovery password?\n")
+        print(Fore.RED + "Reminder: This was case sensitive!\n")
+        user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+
+        clear()
+
+        if get_backup_data(user_location, user_email, user_recovery_pass):
+            return
+        else:
+            print(Fore.RED + "The details you have entered do not match"
+                             " the details recorded in our database.\n")
+            print(Fore.CYAN + "Are you sure you entered them correctly?\n")
+            print(Style.RESET_ALL + "Please Enter 'RETRY' to try again.")
+            print("Or Enter 'FORGOT' if you do not know these Recovery"
+                  " details.")
+
+            valid_mode_input = ["RETRY", "FORGOT"]
             mode_str = input(Fore.GREEN + "Enter here:\n").upper()
 
-            # Calls Mode Validation to check for correct input string
             if validate_mode(mode_str, valid_mode_input):
                 if mode_str == "RETRY":
                     clear()
                     print(Fore.GREEN + "No problem. Loading Questions...\n")
-                    acc_recovery_questions()
-
+                    continue
                 elif mode_str == "FORGOT":
                     clear()
                     forgot_acc_recovery()
@@ -978,7 +1015,15 @@ def acc_recovery_questions():
 
 def acc_recovery():
     """
-    Account Recovery Terminal.
+    Account Recovery Terminal. Prompts users with an option to return
+    to the Main menu. Then prompts users with a question.
+
+    - If 'YES' while loop breaks. Function code proceeds.
+    - If 'NO' the 'forgot_acc_recovery' function is called.
+
+    Calls the 'acc_recovery_questions' function. Prints statements to
+    terminal and prompts users to enter 'PROCEED' using 'validate_mode'
+    function call. Once True, calls the 'start_menu' function.
     """
     print(Fore.YELLOW + "Welcome to Account Recovery.\n")
     print(Style.RESET_ALL + "If you have lost your Account Number or Pin Code"
@@ -1032,6 +1077,7 @@ def acc_recovery():
                 forgot_acc_recovery()
 
     acc_recovery_questions()
+
     print(Fore.YELLOW + "\nWe reccomend changing your Custom Password reguarly"
                         " for an extra layer of protection.")
     print(Fore.RED + "If you believe your Account is at risk of being"
@@ -1068,7 +1114,10 @@ def start_menu():
     print("Welcome to the Main Menu.")
     print(Fore.CYAN + "You're now at the Create & Login Terminal.\n")
     print(Style.RESET_ALL + "To proceed with your banking experience,"
-          " please choose 'CREATE', 'LOGIN', 'RECOVER'.")
+          " please:\n")
+    print("Enter 'CREATE' to Create an Account.")
+    print("Enter 'LOGIN' to Login to an existing Account.")
+    print("Enter 'RECOVER' if you've lost access to a Account.\n")
 
     # Creates a list of expected strings for validate function
     valid_mode_input = ["CREATE", "LOGIN", "RECOVER"]
