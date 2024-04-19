@@ -542,13 +542,20 @@ def update_acc_bal(user_amount, acc_num, add=True):
     Google sheet string format and updated on the sheet.
     """
     try:
+        # Check if the user input is positive. (Filters negative numbers)
+        if user_amount.amount < 0:
+            clear()
+            print(Fore.RED + "Invalid input. Amount must be the correct"
+                             " format.\n")
+            return
+
         # Find the row index corresponding to the account number.
         all_rows = ACCOUNTLIST.get_all_values()
         acc_num_list = [row[2].strip() for row in all_rows]
         acc_num = acc_num.strip()
         logged_in_user_index = acc_num_list.index(acc_num) + 1
 
-        # Currency set to EUR
+        # Currency set to EUR.
         currency = 'EUR'
 
         # Extract the numerical value from the string.
@@ -559,21 +566,44 @@ def update_acc_bal(user_amount, acc_num, add=True):
         # Convert amount_value to float for math equation.
         amount_value = float(user_amount.amount)
 
-        # Determine whether to add or subtract based on the add parameter
+        # Determine whether to add or subtract based on the add parameter.
         if add:
             new_acc_bal = current_acc_bal + amount_value
+            if new_acc_bal > 100000:
+                excess_amount = new_acc_bal - 100000
+                new_acc_bal = 100000
+                clear()
+                print(Fore.RED + "Your deposit exceeded the maximum"
+                                 " account balance limit.")
+                print(f"An excess of {currency} {excess_amount:.2f}"
+                      " could not be deposited.\n")
+            else:
+                clear()
+                print(Fore.GREEN + "Updating Account balance...")
+                print(f"{user_amount} has been deposited into your account.\n")
         else:
             new_acc_bal = current_acc_bal - amount_value
+            if new_acc_bal < 0:
+                excess_amount = amount_value - current_acc_bal
+                new_acc_bal = 0
+                clear()
+                print(Fore.RED + "Your withdrawal exceeded the funds"
+                                 " located in this account.")
+                print(f"The sum of {currency} {excess_amount:.2f}"
+                      " could not be withdrawn.\n")
+            else:
+                clear()
+                print(Fore.GREEN + "Updating Account balance...")
+                print(f"{user_amount} has been withdrawn out of your account."
+                      "\n")
 
-        # Format the new balance as a string with currency prefix
+        # Format the new balance as a string with currency prefix.
         new_acc_bal_str = f'{currency} {new_acc_bal:.2f}'
 
         ACCOUNTLIST.update_cell(logged_in_user_index, 6, new_acc_bal_str)
 
-        print(Fore.GREEN + "Updating Account balance...")
-
     except ValueError:
-        print(Fore.RED + "Error: Account number not found or invalid input.")
+        print(Fore.RED + "Error: Account number not found or invalid input.\n")
 
 
 def acc_deposit(fname, acc_num):
@@ -587,11 +617,12 @@ def acc_deposit(fname, acc_num):
     -If it can it calls update user balance function.
     """
     clear()
-    print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
-    print(Fore.CYAN + "From here you can deposit funds into your Eternity"
-                      " Holdings Account. See below for your current balance.")
 
     while True:
+        print(Fore.YELLOW + "Welcome to Eternity Holdings deposit terminal")
+        print(Fore.CYAN + "From here you can deposit funds into your Eternity"
+                          " Holdings Account. See below for your current"
+                          " balance.")
         login_user_bal(acc_num)
 
         print(Style.RESET_ALL + "\nTo return to the HUB please Enter 'EXIT'.")
@@ -609,10 +640,7 @@ def acc_deposit(fname, acc_num):
         try:
             user_amount = Money(mode_str, 'EUR')
             update_acc_bal(user_amount, acc_num, add=True)
-
-            clear()
-            print(Fore.GREEN + f"{user_amount} has been deposited into"
-                               " your account.")
+            continue
 
         except ValueError:
             clear()
@@ -632,11 +660,12 @@ def acc_withdrawal(fname, acc_num):
     -If it can it calls update user balance function.
     """
     clear()
-    print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
-    print(Fore.CYAN + "From here you can withdraw funds out of your Eternity"
-                      " Holdings Account. See below for your current balance.")
 
     while True:
+        print(Fore.YELLOW + "Welcome to Eternity Holdings withdraw terminal")
+        print(Fore.CYAN + "From here you can withdraw funds out of your"
+                          " Eternity Holdings Account. See below for your"
+                          " current balance.")
         login_user_bal(acc_num)
 
         print(Style.RESET_ALL + "\nTo return to the HUB please Enter 'EXIT'.")
@@ -654,16 +683,12 @@ def acc_withdrawal(fname, acc_num):
         try:
             user_amount = Money(mode_str, 'EUR')
             update_acc_bal(user_amount, acc_num, add=False)
-
-            clear()
-            print(Fore.GREEN + f"{user_amount} has been withdrawn out of"
-                               " your account.")
+            continue
 
         except ValueError:
             clear()
-            print(Fore.RED + f"The Input of {mode_str} is"
-                             " incorrect. Remember to use the correct"
-                             " format!")
+            print(Fore.RED + f"The Input of {mode_str} is incorrect. Remember"
+                             " to use the correct format!")
 
 
 def acc_logout_confirm(fname, acc_num):
