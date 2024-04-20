@@ -848,16 +848,71 @@ def acc_options(fname, acc_num):
                 logged_in_hub(fname, acc_num)
 
 
+def check_acc_currency(acc_num):
+    """
+    Checks Account Currency
+    """
+    currency_names = {
+        "EUR": "Euro",
+        "USD": "United States Dollar",
+        "JPY": "Japanese Yen",
+        "GBP": "British Pound Sterling",
+        "AUD": "Australian Dollar",
+        "CAD": "Canadian Dollar",
+        "CHF": "Swiss Franc",
+        "CNY": "Chinese Yuan",
+        "INR": "Indian Rupee",
+        "RUB": "Russian Ruble",
+        "BRL": "Brazilian Real",
+        "NOK": "Norwegian Krone"
+    }
+
+    acc_num_list = get_sheet_data(3)
+    acc_bal_list = get_sheet_data(6)
+
+    logged_in_user = acc_num_list.index(acc_num)
+    current_acc_bal = acc_bal_list[logged_in_user]
+
+    # Extract currency code from current account balance string.
+    current_currency = current_acc_bal.split()[0]
+
+    # Iterate over the currency_names dictionary to find the currency.
+    for currency, full_name in currency_names.items():
+        if currency == current_currency:
+            print(Style.RESET_ALL + f"{currency} the {full_name}.")
+            return
+
+    print(Fore.RED + "An Error has occurred finding Account Currency type.")
+
+
 def currency_convert_menu(fname, acc_num):
     """
     Currency Convery Menu
     """
     print(Fore.YELLOW + f"Welcome {fname} to Eternity Holdings Currency"
                         " Conversion terminal.\n")
+    print(Fore.CYAN + "Your Account's Default Currency is set to:")
+    check_acc_currency(acc_num)
 
-    print(Fore.RED + "We're sorry, the Currency Conversion Terminal is not yet"
-                     " complete. Returning to HUB...\n")
-    logged_in_hub(fname, acc_num)
+    print(Style.RESET_ALL + "\nIf you wish to change your Account Currency"
+                            " please Enter 'PROCEED'.")
+    print(Fore.RED + "To return to the HUB please Enter 'EXIT'.\n")
+    # Creates a list of expected strings for validate function
+    valid_mode_input = ["PROCEED", "EXIT"]
+
+    while True:
+        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        # Calls Mode Validation to check for correct input string
+        if validate_mode(mode_str, valid_mode_input):
+            if mode_str == "PROCEED":
+                clear()
+                print(Fore.GREEN + "Proceeding to Currency Conversion...")
+                break
+
+            elif mode_str == "EXIT":
+                clear()
+                print(Fore.GREEN + "Returning to the HUB...\n")
+                logged_in_hub(fname, acc_num)
 
 
 def logged_in_hub(fname, acc_num):
@@ -1286,6 +1341,7 @@ def main():
     """
     Run all program functions.
     """
+    clear()
     start_menu()
 
 
