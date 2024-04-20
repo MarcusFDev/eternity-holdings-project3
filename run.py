@@ -32,8 +32,24 @@ SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
 ACCOUNTLIST = SHEET.worksheet('accountlist')
 
-# Initialize Colorama to work with ANSI escape sequences
+# Initialize Colorama to work with ANSI escape sequences.
 init()
+
+# Manual Money Conversion Rates.
+CONVERSION_RATES = {
+    "EUR": 1.0,  # Euro
+    "USD": 1.19,  # United States Dollar
+    "JPY": 130.76,  # Japanese Yen
+    "GBP": 0.87,  # British Pound Sterling
+    "AUD": 1.55,  # Austrailian Dollar
+    "CAD": 1.48,  # Canadian Dollar
+    "CHF": 1.10,  # Swiss Franc
+    "CNY": 7.75,  # Chinese Yuan
+    "INR": 89.09,  # Indian Rupee
+    "RUB": 92.86,  # Russian Ruple
+    "BRL": 6.64,  # Brazilian Real
+    "NOK": 10.45  # Norwegian Krone
+}
 
 
 def clear():
@@ -832,6 +848,18 @@ def acc_options(fname, acc_num):
                 logged_in_hub(fname, acc_num)
 
 
+def currency_convert_menu(fname, acc_num):
+    """
+    Currency Convery Menu
+    """
+    print(Fore.YELLOW + f"Welcome {fname} to Eternity Holdings Currency"
+                        " Conversion terminal.\n")
+
+    print(Fore.RED + "We're sorry, the Currency Conversion Terminal is not yet"
+                     " complete. Returning to HUB...\n")
+    logged_in_hub(fname, acc_num)
+
+
 def logged_in_hub(fname, acc_num):
     """
     The Main HUB Terminal. Prompts users to enter where
@@ -852,13 +880,14 @@ def logged_in_hub(fname, acc_num):
     print(Style.RESET_ALL + "Enter 'DEPOSIT' to go to"
                             " the Deposit funds terminal.")
     print("Enter 'WITHDRAW' to go to the Withdraw funds terminal.")
-    print("Enter 'BALANCE' to check your current account balance.\n")
+    print("Enter 'BALANCE' to check your current account balance.")
+    print("Enter 'CONVERSION' to change your Account Currency.\n")
 
     print("Or Enter 'MORE OPTIONS' to load more options.")
     print("To Log Out of this Account Enter 'LOG OUT'.\n")
     # Creates a list of expected strings for validate function
     valid_mode_input = ["DEPOSIT", "WITHDRAW", "BALANCE", "MORE OPTIONS",
-                        "LOG OUT"]
+                        "CONVERSION", "LOG OUT"]
 
     while True:
         mode_str = input(Fore.GREEN + "Enter here:\n").upper()
@@ -866,12 +895,12 @@ def logged_in_hub(fname, acc_num):
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "DEPOSIT":
                 clear()
-                print("Going to the Deposit terminal!\n")
+                print("Going to the Deposit terminal...\n")
                 acc_deposit(fname, acc_num)
 
             elif mode_str == "WITHDRAW":
                 clear()
-                print("Going to the Withdraw terminal!\n")
+                print("Going to the Withdraw terminal...\n")
                 acc_withdrawal(fname, acc_num)
 
             elif mode_str == "BALANCE":
@@ -879,6 +908,11 @@ def logged_in_hub(fname, acc_num):
                 print(Fore.CYAN + f"Hello {fname} see below for your balance:")
                 login_user_bal(acc_num)
                 logged_in_hub(fname, acc_num)
+
+            elif mode_str == "CONVERSION":
+                clear()
+                print("Going to the Conversion terminal...\n")
+                currency_convert_menu(fname, acc_num)
 
             elif mode_str == "MORE OPTIONS":
                 clear()
