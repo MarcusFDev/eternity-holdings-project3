@@ -14,6 +14,7 @@ import os
 import datetime
 import random
 import re
+import pprint
 from money import Money
 
 import gspread
@@ -49,6 +50,21 @@ CONVERSION_RATES = {
     "RUB": 92.86,  # Russian Ruple
     "BRL": 6.64,  # Brazilian Real
     "NOK": 10.45  # Norwegian Krone
+}
+
+CURRENCY_NAMES = {
+    "EUR": "European Euro",
+    "USD": "United States Dollar",
+    "JPY": "Japanese Yen",
+    "GBP": "British Pound Sterling",
+    "AUD": "Australian Dollar",
+    "CAD": "Canadian Dollar",
+    "CHF": "Swiss Franc",
+    "CNY": "Chinese Yuan",
+    "INR": "Indian Rupee",
+    "RUB": "Russian Ruble",
+    "BRL": "Brazilian Real",
+    "NOK": "Norwegian Krone"
 }
 
 
@@ -852,21 +868,6 @@ def check_acc_currency(acc_num):
     """
     Checks Account Currency
     """
-    currency_names = {
-        "EUR": "Euro",
-        "USD": "United States Dollar",
-        "JPY": "Japanese Yen",
-        "GBP": "British Pound Sterling",
-        "AUD": "Australian Dollar",
-        "CAD": "Canadian Dollar",
-        "CHF": "Swiss Franc",
-        "CNY": "Chinese Yuan",
-        "INR": "Indian Rupee",
-        "RUB": "Russian Ruble",
-        "BRL": "Brazilian Real",
-        "NOK": "Norwegian Krone"
-    }
-
     acc_num_list = get_sheet_data(3)
     acc_bal_list = get_sheet_data(6)
 
@@ -877,7 +878,7 @@ def check_acc_currency(acc_num):
     current_currency = current_acc_bal.split()[0]
 
     # Iterate over the currency_names dictionary to find the currency.
-    for currency, full_name in currency_names.items():
+    for currency, full_name in CURRENCY_NAMES.items():
         if currency == current_currency:
             print(Style.RESET_ALL + f"{currency} the {full_name}.")
             return
@@ -885,34 +886,104 @@ def check_acc_currency(acc_num):
     print(Fore.RED + "An Error has occurred finding Account Currency type.")
 
 
+def currency_converter(requested_convert, acc_num):
+    """
+    Currency Converter
+    """
+    acc_num_list = get_sheet_data(3)
+    acc_bal_list = get_sheet_data(6)
+
+    try:
+        logged_in_user = acc_num_list.index(acc_num)
+    except ValueError:
+        clear()
+        print(Fore.RED + f"Account number {acc_num} not found in the list.")
+        return
+
+    before_convert_bal_str = acc_bal_list[logged_in_user]
+
+    currency, amount_str = before_convert_bal_str.split()
+    before_acc_bal = float(amount_str)
+
+    if currency == requested_convert:
+        # If the requested currency is the same as the current currency,
+        # no need to perform conversion
+        new_acc_bal = before_acc_bal
+    elif currency == "EUR":
+        # Converts the balance from Euro to the requested currency.
+        new_acc_bal = before_acc_bal * CONVERSION_RATES[requested_convert]
+    elif requested_convert == "EUR":
+        # Converts the balance from the current currency to Euro.
+        new_acc_bal = before_acc_bal / CONVERSION_RATES[currency]
+    else:
+        # Converts the balance from one non-Euro currency to another.
+        # First converts to Euro, then to the requested currency.
+        euro_equivalent = before_acc_bal / CONVERSION_RATES[currency]
+        new_acc_bal = euro_equivalent * CONVERSION_RATES[requested_convert]
+
+    current_acc_bal = Money(new_acc_bal, requested_convert)
+
+    formatted_bal = f"{requested_convert} {current_acc_bal.amount:.2f}"
+
+    try:
+        ACCOUNTLIST.update_cell(logged_in_user + 2, 6, formatted_bal)
+        clear()
+        print("Your Account Balance has been updated to"
+              f" {requested_convert}.\n")
+        return
+    except Exception as e:
+        clear()
+        print(Fore.RED + f"An error occurred while updating the cell: {e}")
+        return
+
+
 def currency_convert_menu(fname, acc_num):
     """
     Currency Convery Menu
     """
-    print(Fore.YELLOW + f"Welcome {fname} to Eternity Holdings Currency"
-                        " Conversion terminal.\n")
-    print(Fore.CYAN + "Your Account's Default Currency is set to:")
-    check_acc_currency(acc_num)
-
-    print(Style.RESET_ALL + "\nIf you wish to change your Account Currency"
-                            " please Enter 'PROCEED'.")
-    print(Fore.RED + "To return to the HUB please Enter 'EXIT'.\n")
-    # Creates a list of expected strings for validate function
-    valid_mode_input = ["PROCEED", "EXIT"]
-
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-        # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "PROCEED":
-                clear()
-                print(Fore.GREEN + "Proceeding to Currency Conversion...")
-                break
+        print(Fore.YELLOW + f"Welcome {fname} to Eternity Holdings Currency"
+                            " Conversion terminal.\n")
+        print(Fore.CYAN + "Your Account's Default Currency is set to:")
+        check_acc_currency(acc_num)
 
-            elif mode_str == "EXIT":
+        print(Style.RESET_ALL + "\nPlease Enter which Currency to convert to.")
+        print("Or Enter 'LIST' to see supported currencies.\n")
+
+        print(Fore.RED + "Note: You must Enter in the correct format.")
+        print(Fore.CYAN + "Example: 'EUR', 'GBP', 'USD'.\n")
+
+        print(Style.RESET_ALL + "To return to the HUB please Enter 'EXIT'"
+                                ".\n")
+        while True:
+            mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+            if mode_str == "EXIT":
                 clear()
-                print(Fore.GREEN + "Returning to the HUB...\n")
+                print(Fore.GREEN + "Returning to HUB...\n")
                 logged_in_hub(fname, acc_num)
+
+            elif mode_str == "LIST":
+                print(Fore.YELLOW + "\nThis is the list of currency currently"
+                                    " supported:")
+                print(Style.RESET_ALL)
+                pprint.pprint(CURRENCY_NAMES)
+                print(Fore.CYAN + "\nWhich one do you require?\n")
+                print(Fore.RED + "If you changed your mind please Enter"
+                                 " 'EXIT'.")
+                continue
+
+            try:
+                requested_convert = mode_str
+                currency_converter(requested_convert, acc_num)
+                break
+            except ValueError:
+                print(Fore.RED + "Invalid input. Please try again.")
+                continue
+
+            except Exception as e:
+                print(Fore.RED + f"The input: {str(e)} is incorrect.")
+                continue
 
 
 def logged_in_hub(fname, acc_num):
