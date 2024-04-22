@@ -558,10 +558,10 @@ def login_user_bal(acc_num):
     logged_in_user = acc_num_list.index(acc_num)
     current_acc_bal = acc_bal_list[logged_in_user]
 
-    print(Fore.YELLOW + "\nYour Account Balance is:", current_acc_bal)
+    print(Fore.YELLOW + f"Your Account Balance is: {current_acc_bal}.\n")
 
 
-def update_acc_bal(user_amount, acc_num, add=True):
+def update_acc_bal(user_amount, acc_num, currency, add=True):
     """
     Updates the User Account Balance in Google Sheet.
     Gets logged in Accounts balance and converts
@@ -586,9 +586,6 @@ def update_acc_bal(user_amount, acc_num, add=True):
         acc_num_list = [row[2].strip() for row in all_rows]
         acc_num = acc_num.strip()
         logged_in_user_index = acc_num_list.index(acc_num) + 1
-
-        # Currency set to EUR.
-        currency = 'EUR'
 
         # Extract the numerical value from the string.
         current_acc_bal_str = all_rows[logged_in_user_index - 1][5]
@@ -670,15 +667,17 @@ def acc_deposit(fname, acc_num):
             return
 
         try:
-            user_amount = Money(mode_str, 'EUR')
-            update_acc_bal(user_amount, acc_num, add=True)
+            currency = check_acc_currency(acc_num)
+            clear()
+            user_amount = Money(mode_str, currency)
+            update_acc_bal(user_amount, acc_num, currency, add=True)
             continue
 
         except ValueError:
             clear()
             print(Fore.RED + f"The Input of {mode_str} is"
                              " incorrect. Remember to use the correct"
-                             " format!")
+                             " format!\n")
 
 
 def acc_withdrawal(fname, acc_num):
@@ -707,14 +706,15 @@ def acc_withdrawal(fname, acc_num):
         mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
 
         if mode_str == "EXIT":
-            clear()
             print(Fore.GREEN + "Returning to HUB...\n")
             logged_in_hub(fname, acc_num)
             return
 
         try:
-            user_amount = Money(mode_str, 'EUR')
-            update_acc_bal(user_amount, acc_num, add=False)
+            currency = check_acc_currency(acc_num)
+            clear()
+            user_amount = Money(mode_str, currency)
+            update_acc_bal(user_amount, acc_num, currency, add=False)
             continue
 
         except ValueError:
@@ -881,7 +881,7 @@ def check_acc_currency(acc_num):
     for currency, full_name in CURRENCY_NAMES.items():
         if currency == current_currency:
             print(Style.RESET_ALL + f"{currency} the {full_name}.")
-            return
+            return currency
 
     print(Fore.RED + "An Error has occurred finding Account Currency type.")
 
