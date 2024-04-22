@@ -514,15 +514,12 @@ def create_account():
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "EXIT":
                 clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
-                print("Sending to Main Menu...\n")
+                print(Fore.RED + "Returning to Main Menu...\n")
                 start_menu()
 
             elif mode_str == "PROCEED":
                 clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Account"
-                                   " Creation!")
-                print("Proceeding to Account Creation...\n")
+                print(Fore.GREEN + "Proceeding to Account Creation...\n")
 
                 break
 
@@ -1102,25 +1099,30 @@ def login_account():
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "EXIT":
                 clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
-                print("Sending to Main Menu...\n")
+                print(Fore.RED + "Returning to Main Menu...\n")
                 start_menu()
 
             elif mode_str == "PROCEED":
                 clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Account"
-                                   " Login!")
-                print("Proceeding to Account Login...\n")
-
+                print(Fore.GREEN + "Proceeding to Account Login...\n")
                 break
 
     while True:
-        print(Fore.CYAN + "You're now at the Account Login Terminal.\n")
+        print(Fore.YELLOW + "Welcome to Account Login.\n")
+        print(Fore.CYAN + "You're now at the Account Login Terminal.")
+        print(Fore.RED + "Note: Names are not case sensitive.\n")
         # Assigns a variable to each user input
-        fname = input(Style.RESET_ALL + "Please Enter First Name:\n").upper()
-        lname = input("Please Enter Last Name:\n").upper()
-        acc_num = input("Please Enter Account Number:\n")
-        pin_num = input("Please Enter the Account Pin number:\n")
+        print(Style.RESET_ALL + "What is your First Name?")
+        fname = input(Fore.GREEN + "Enter here:\n").upper()
+
+        print(Style.RESET_ALL + "\nWhat is your Last Name?")
+        lname = input(Fore.GREEN + "Enter here:\n").upper()
+
+        print(Style.RESET_ALL + "\nWhat is your Account Number?")
+        acc_num = input(Fore.GREEN + "Enter here:\n").upper()
+
+        print(Style.RESET_ALL + "\nWhat is your Account Pin Number?")
+        pin_num = input(Fore.GREEN + "Enter here:\n").upper()
 
         # Calls function and gives it the input values
         if login_acc_checker(fname, lname, acc_num, pin_num):
