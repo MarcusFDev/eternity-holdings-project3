@@ -640,10 +640,11 @@ def acc_deposit(fname, acc_num):
     Account Deposit Terminal. Prompts user to input
     'EXIT' or a numerical value to deposit to their account.
 
-    -If 'EXIT' the while loop ends returning to HUB.
-    -If not, try loop attempts to convert value using Money().
-    -If it cannot a ValueError triggers & loop begins again.
-    -If it can it calls update user balance function.
+    - If 'EXIT' the while loop ends returning to HUB.
+    - Grabs Account currency using 'check_acc_currency()'.
+    - The loop attempts to convert value using 'Money()'.
+    - If it cannot a ValueError triggers & loop begins again.
+    - If it can it calls update user balance function.
     """
     clear()
 
@@ -685,10 +686,11 @@ def acc_withdrawal(fname, acc_num):
     Account Withdraw Terminal. Prompts user to input
     'EXIT' or a numerical value to withdraw from their account.
 
-    -If 'EXIT' the while loop ends returning to HUB.
-    -If not, try loop attempts to convert value using Money().
-    -If it cannot a ValueError triggers & loop begins again.
-    -If it can it calls update user balance function.
+    - If 'EXIT' the while loop ends returning to HUB.
+    - Grabs Account currency using 'check_acc_currency()'.
+    - The loop attempts to convert value using Money().
+    - If it cannot a ValueError triggers & loop begins again.
+    - If it can it calls update user balance function.
     """
     clear()
 
@@ -866,7 +868,13 @@ def acc_options(fname, acc_num):
 
 def check_acc_currency(acc_num):
     """
-    Checks Account Currency
+    Checks Account Currency. Grabs sheet data for
+    all Account Numbers and balances. Then takes 'acc_num'
+    and finds associated balance.
+
+    Compares account balance with 'CURRENCY_NAMES' dictionary.
+    Finds associated currency, prints statement.
+    Returns the value 'currency'.
     """
     acc_num_list = get_sheet_data(3)
     acc_bal_list = get_sheet_data(6)
@@ -888,7 +896,17 @@ def check_acc_currency(acc_num):
 
 def currency_converter(requested_convert, acc_num):
     """
-    Currency Converter
+    Currency Converter. Grabs the acc_num and associated
+    balance to that account. Splits the currency with the bal.
+    Compares the currency with the 'requested_convert' value.
+
+    - If Equal, no conversion needed.
+    - If Current balance is EUR, multiples the bal with the requested_convert.
+    - If requested_convert is EUR, it divides the conversion rate with acc bal.
+    - If neither currencies are EUR, converts the current acc currency back to
+      EUR then multiplies that value with the 'requested_convert'.
+
+    Formats the new currency & updates the Google Sheet.
     """
     acc_num_list = get_sheet_data(3)
     acc_bal_list = get_sheet_data(6)
@@ -939,7 +957,16 @@ def currency_converter(requested_convert, acc_num):
 
 def currency_convert_menu(fname, acc_num):
     """
-    Currency Convery Menu
+    Currency Convert Menu. Wrapped in a While True loop. Prompts users with a
+    user input accepting 3 options.
+
+    - If 'EXIT' is detected, returns to the HUB menu.
+    - if 'LIST' is detected, uses 'pprint()' to display the 'CONVERSION_NAMES'
+      dictionary.
+    - If neither of those are detected a 'try' block continues.
+
+    Renames 'mode_str' value to 'requested_convert', calls 'currency_convert'
+    function passing it the value. If successful loop breaks to the start.
     """
     while True:
         print(Fore.YELLOW + f"Welcome {fname} to Eternity Holdings Currency"
@@ -992,11 +1019,12 @@ def logged_in_hub(fname, acc_num):
     they wish to go. Calls the Validate Mode function to
     check user input.
 
-    - If input 'DEPOSIT' is detected. Calls the 'acc_deposit' function.
-    - If input 'WITHDRAW' is detected. Calls the 'acc_withdrawal' function.
-    - If input 'BALANCE' is detected. Calls 'login_user_bal' function.
-    - If input 'MORE OPTIONS' is detected. Calls 'acc_options' function.
-    - If input 'LOG OUT' is detected. Calls 'acc_logout_confirm' function.
+    - If 'DEPOSIT' is detected. Calls the 'acc_deposit' function.
+    - If 'WITHDRAW' is detected. Calls the 'acc_withdrawal' function.
+    - If 'BALANCE' is detected. Calls 'login_user_bal' function.
+    - If 'CONVERSION' is detected. Calls 'currency_convert_menu' function.
+    - If 'MORE OPTIONS' is detected. Calls 'acc_options' function.
+    - If 'LOG OUT' is detected. Calls 'acc_logout_confirm' function.
     """
     print(Fore.YELLOW + f"Welcome {fname} you are now"
                         " at the Eternity Holdings HUB.")
