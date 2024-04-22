@@ -92,7 +92,8 @@ The Business Goals for Eternity Holdings are:
 
 ### Flowcharts
 
-Flowchart: https://lucid.app/lucidchart/2b48ac3d-3655-40a7-b44b-4afc8a233830/edit?viewport_loc=-1124%2C-212%2C9052%2C4612%2C0_0&invitationId=inv_d450b472-ad4d-46f3-9de1-6875b6845fb1
+Flowchart: A site called [Lucidchart](https://www.lucidchart.com) was used for the creation of the Project [Flowchart](https://lucid.app/lucidchart/2b48ac3d-3655-40a7-b44b-4afc8a233830/edit?viewport_loc=-1124%2C-212%2C9052%2C4612%2C0_0&invitationId=inv_d450b472-ad4d-46f3-9de1-6875b6845fb1).
+
 ---
 # Features
 
