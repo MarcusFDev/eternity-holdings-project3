@@ -234,7 +234,7 @@ def acc_deposit(fname, acc_num):
         if mode_str == "EXIT":
             clear()
             print(Fore.GREEN + "Returning to HUB...\n")
-            logged_in_hub(fname, acc_num)
+            bank_hub(fname, acc_num)
             return
 
         try:
@@ -279,7 +279,7 @@ def acc_withdrawal(fname, acc_num):
 
         if mode_str == "EXIT":
             print(Fore.GREEN + "Returning to HUB...\n")
-            logged_in_hub(fname, acc_num)
+            bank_hub(fname, acc_num)
             return
 
         try:
@@ -321,7 +321,7 @@ def acc_logout_confirm(fname, acc_num):
             elif mode_str == "NO":
                 clear()
                 print(Fore.RED + "Returning back...\n")
-                logged_in_hub(fname, acc_num)
+                bank_hub(fname, acc_num)
 
 
 def acc_change_pin(acc_num):
@@ -433,7 +433,7 @@ def acc_options(fname, acc_num):
             elif mode_str == "RETURN":
                 clear()
                 print("Returning back to the HUB...\n")
-                logged_in_hub(fname, acc_num)
+                bank_hub(fname, acc_num)
 
 
 def check_acc_currency(acc_num):
@@ -558,7 +558,7 @@ def currency_convert_menu(fname, acc_num):
             if mode_str == "EXIT":
                 clear()
                 print(Fore.GREEN + "Returning to HUB...\n")
-                logged_in_hub(fname, acc_num)
+                bank_hub(fname, acc_num)
 
             elif mode_str == "LIST":
                 print(Fore.YELLOW + "\nThis is the list of currency currently"
@@ -583,7 +583,7 @@ def currency_convert_menu(fname, acc_num):
                 continue
 
 
-def logged_in_hub(fname, acc_num):
+def bank_hub(fname, acc_num):
     """
     The Main HUB Terminal. Prompts users to enter where
     they wish to go. Calls the Validate Mode function to
@@ -631,7 +631,7 @@ def logged_in_hub(fname, acc_num):
                 clear()
                 print(Fore.CYAN + f"Hello {fname} see below for your balance:")
                 login_user_bal(acc_num)
-                logged_in_hub(fname, acc_num)
+                bank_hub(fname, acc_num)
 
             elif mode_str == "CONVERSION":
                 clear()
@@ -701,7 +701,7 @@ def login_account():
         if login_acc_checker(fname, lname, acc_num, pin_num):
             clear()
             print(Fore.GREEN + "You have Successfully logged in.\n")
-            logged_in_hub(fname, acc_num)
+            bank_hub(fname, acc_num)
             break
         else:
             clear()
