@@ -44,7 +44,7 @@ def acc_num_generator(first_name, last_name, date_of_birth):
 
 
 def acc_create_finished(start_menu_func, create_acc_func, login_acc_func,
-                        bank_hub_func):
+                        bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Account Creation Confirmed message.
     When called, prompts the user to input 'PROCEED' and
@@ -65,7 +65,8 @@ def acc_create_finished(start_menu_func, create_acc_func, login_acc_func,
                 clear()
                 print(Fore.GREEN + "Returning to Main Menu...")
                 return start_menu_func(create_acc_func, login_acc_func,
-                                       bank_hub_func)
+                                       bank_hub_func, acc_recovery_func,
+                                       acc_detail_func)
 
             break
 
@@ -73,7 +74,8 @@ def acc_create_finished(start_menu_func, create_acc_func, login_acc_func,
 
 
 def acc_create_confirm(first_name, last_name, date_of_birth, start_menu_func,
-                       create_acc_func, login_acc_func, bank_hub_func):
+                       create_acc_func, login_acc_func, bank_hub_func,
+                       acc_recovery_func, acc_detail_func):
     """
     Account Detail confirmation.
     Prints the user inputs to the terminal & prompts the user to
@@ -120,14 +122,16 @@ def acc_create_confirm(first_name, last_name, date_of_birth, start_menu_func,
                                  " you will need them to access your Account"
                                  " in Login.")
                 acc_create_finished(start_menu_func, create_acc_func,
-                                    login_acc_func, bank_hub_func)
+                                    login_acc_func, bank_hub_func,
+                                    acc_recovery_func, acc_detail_func)
                 break
 
             elif mode_str == "NO":
                 clear()
                 print(Fore.RED + "No problem. Lets go back...")
                 create_account(start_menu_func, create_acc_func,
-                               login_acc_func, bank_hub_func)
+                               login_acc_func, bank_hub_func,
+                               acc_recovery_func, acc_detail_func)
                 break
 
 
@@ -253,7 +257,8 @@ def create_backup_setup(acc_num):
 
 
 def validate_dob(date_of_birth, first_name, start_menu_func, create_acc_func,
-                 login_acc_func, bank_hub_func):
+                 login_acc_func, bank_hub_func, acc_recovery_func,
+                 acc_detail_func):
     """
     Validates user input for date.
     Checks user input to be over the Age of 18.
@@ -280,7 +285,8 @@ def validate_dob(date_of_birth, first_name, start_menu_func, create_acc_func,
             print(Fore.RED + f"Sorry {first_name}, you must be 18 or older"
                   " to create an account with us.\n")
             return start_menu_func(create_acc_func, login_acc_func,
-                                   bank_hub_func)
+                                   bank_hub_func, acc_recovery_func,
+                                   acc_detail_func)
 
     except ValueError:
         clear()
@@ -290,7 +296,7 @@ def validate_dob(date_of_birth, first_name, start_menu_func, create_acc_func,
 
 
 def create_account(start_menu_func, create_acc_func, login_acc_func,
-                   bank_hub_func):
+                   bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Create Account Terminal. Prompts users with an option to return
     to the Main menu. Collects DOB, First and Last Name data from user input.
@@ -316,7 +322,8 @@ def create_account(start_menu_func, create_acc_func, login_acc_func,
                 clear()
                 print(Fore.RED + "Returning to Main Menu...\n")
                 return start_menu_func(create_acc_func, login_acc_func,
-                                       bank_hub_func)
+                                       bank_hub_func, acc_recovery_func,
+                                       acc_detail_func)
 
             elif mode_str == "PROCEED":
                 clear()
@@ -338,11 +345,13 @@ def create_account(start_menu_func, create_acc_func, login_acc_func,
                               " the format (YYYY-MM-DD):\n")
         # Calls Date of Birth Validation function
         if validate_dob(date_of_birth, first_name, start_menu_func,
-                        create_acc_func, login_acc_func, bank_hub_func):
+                        create_acc_func, login_acc_func, bank_hub_func,
+                        acc_recovery_func, acc_detail_func):
             clear()
             acc_create_confirm(first_name, last_name, date_of_birth,
                                start_menu_func, create_acc_func,
-                               login_acc_func, bank_hub_func)
+                               login_acc_func, bank_hub_func,
+                               acc_recovery_func, acc_detail_func)
             break
         else:
             print(Fore.RED + "Please Try Again.\n")

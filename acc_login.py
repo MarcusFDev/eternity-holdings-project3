@@ -23,7 +23,7 @@ ACCOUNTLIST = SHEET.worksheet('accountlist')
 
 
 def login_account(start_menu_func, create_acc_func, login_acc_func,
-                  bank_hub_func):
+                  bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Login Account Terminal. Prompts users with an option to return
     to the Main menu. Collects User input for their Account.
@@ -48,7 +48,8 @@ def login_account(start_menu_func, create_acc_func, login_acc_func,
             if mode_str == "EXIT":
                 clear()
                 print(Fore.RED + "Returning to Main Menu...\n")
-                start_menu_func(create_acc_func, login_account, bank_hub_func)
+                start_menu_func(create_acc_func, login_account, bank_hub_func,
+                                acc_recovery_func, acc_detail_func)
                 return
 
             elif mode_str == "PROCEED":
@@ -78,14 +79,15 @@ def login_account(start_menu_func, create_acc_func, login_acc_func,
             clear()
             print(Fore.GREEN + "You have Successfully logged in.\n")
             bank_hub_func(fname, acc_num, create_acc_func, login_acc_func,
-                          bank_hub_func)
+                          bank_hub_func, acc_recovery_func, acc_detail_func)
             break
         else:
             clear()
             print(Fore.RED + "Sorry your search does not match"
                   " any Account in our database.")
             print("Returning to Main Menu...\n")
-            start_menu_func(create_acc_func, login_account, bank_hub_func)
+            start_menu_func(create_acc_func, login_account, bank_hub_func,
+                            acc_recovery_func, acc_detail_func)
             return
 
 

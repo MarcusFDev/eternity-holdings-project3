@@ -138,6 +138,57 @@ def update_backup_data(acc_num, user_location, user_email, user_recovery_pass):
     return
 
 
+def get_backup_data(user_location, user_email, user_recovery_pass,
+                    acc_detail_func):
+    """
+    Obtain Google Sheet data for Backup Recovery.
+    Collects data of rows 1-9 specifically. Checks for empty
+    sheet cells and returns False if found.
+
+    Otherwise targets data from rows 7-9. Converts the passed
+    user inputs into strings and compares the data from the sheet.
+
+    When match is found grabs the asscoiated account number and calls
+    'all_acc_detail' function passings it the account number.
+    """
+    print(Fore.GREEN + "Obtaining Account Backup data...")
+
+    ACCOUNTLIST = SHEET.worksheet('accountlist')
+    # Gets the data from all sheet rows.
+    all_rows = ACCOUNTLIST.get_all_values()
+
+    # Determine the end index dynamically
+    end_index = min(9, len(all_rows))
+
+    for row in all_rows[1:end_index]:
+        # Check if any cell in the row is empty.
+        if any(cell == '' for cell in row):
+            print(Fore.RED + "Data does not match any Account found.")
+            return False
+
+        # Handle the row as a whole list
+        sheet_user_location = row[6] if len(row) > 6 else ''
+        sheet_user_email = row[7] if len(row) > 7 else ''
+        sheet_user_recovery_pass = row[8] if len(row) > 8 else ''
+
+        backup_acc_num = row[2] if len(row) > 2 else ''
+
+        # Converts the passed data values to strings.
+        # Checks if all the user input matches the data in the sheet.
+        if (
+            str(user_location) == sheet_user_location and
+            str(user_email) == sheet_user_email and
+            str(user_recovery_pass) == sheet_user_recovery_pass
+        ):
+            print("Account Found.")
+            acc_detail_func(backup_acc_num)
+            return True
+
+    # If no match found after checking all rows
+    print(Fore.RED + "Data does not match any Account found.")
+    return False
+
+
 def acc_pin_generator():
     """
     Generates a 4 digit number to be used as a Account Pin.

@@ -8,11 +8,11 @@ Contains but not limited to functions that:
 -Users can Log Out of an account.
 -Allows users to Deposit & Withdraw funds into their account.
 """
-
+from acc_recovery import acc_recovery
 from acc_login import login_account
 from acc_creation import create_account, create_backup_setup
 from utils import (clear, validate_mode, get_sheet_data,
-                   acc_pin_generator, validate_email)
+                   acc_pin_generator)
 from colorama import init, Fore, Style
 import pprint
 from money import Money
@@ -207,7 +207,7 @@ def update_acc_bal(user_amount, acc_num, currency, add=True):
 
 
 def acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
-                bank_hub_func):
+                bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Account Deposit Terminal. Prompts user to input
     'EXIT' or a numerical value to deposit to their account.
@@ -237,7 +237,7 @@ def acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
             clear()
             print(Fore.GREEN + "Returning to HUB...\n")
             bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                     bank_hub_func)
+                     bank_hub_func, acc_recovery_func, acc_detail_func)
             return
 
         try:
@@ -255,7 +255,7 @@ def acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
 
 
 def acc_withdrawal(fname, acc_num, create_acc_func, login_acc_func,
-                   bank_hub_func):
+                   bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Account Withdraw Terminal. Prompts user to input
     'EXIT' or a numerical value to withdraw from their account.
@@ -285,7 +285,7 @@ def acc_withdrawal(fname, acc_num, create_acc_func, login_acc_func,
             clear()
             print(Fore.GREEN + "Returning to HUB...\n")
             bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                     bank_hub_func)
+                     bank_hub_func, acc_recovery_func, acc_detail_func)
             return
 
         try:
@@ -302,7 +302,7 @@ def acc_withdrawal(fname, acc_num, create_acc_func, login_acc_func,
 
 
 def acc_logout_confirm(fname, acc_num, create_acc_func, login_acc_func,
-                       bank_hub_func):
+                       bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Log Out Confirmation. Prompts users to input 'YES' or 'NO'.
     uses the Validate Mode function to check user input.
@@ -323,13 +323,14 @@ def acc_logout_confirm(fname, acc_num, create_acc_func, login_acc_func,
                 print(Fore.GREEN + "Remember to spend Responsibly"
                                    " & Have an amazing day.")
                 print(Fore.RED + "You are safely being logged out.\n")
-                start_menu(create_acc_func, login_acc_func, bank_hub_func)
+                start_menu(create_acc_func, login_acc_func, bank_hub_func,
+                           acc_recovery_func, acc_detail_func)
 
             elif mode_str == "NO":
                 clear()
                 print(Fore.RED + "Returning back...\n")
                 bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                         bank_hub_func)
+                         bank_hub_func, acc_recovery_func, acc_detail_func)
 
 
 def acc_change_pin(acc_num):
@@ -395,7 +396,7 @@ def acc_change_pin(acc_num):
 
 
 def acc_options(fname, acc_num, create_acc_func, login_acc_func,
-                bank_hub_func):
+                bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Account More Options terminal.
     Prints statements to the terminal and prompts the user to input
@@ -430,8 +431,10 @@ def acc_options(fname, acc_num, create_acc_func, login_acc_func,
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "RECOVERY":
                 clear()
+                print(Fore.GREEN + "Loading Account details...\n")
                 all_acc_detail(backup_acc_num)
-                print("Going to the Account Recovery Backup terminal!\n")
+                print(Fore.GREEN + "\nGoing to the Account Recovery Backup"
+                                   " terminal...\n")
                 create_backup_setup(acc_num)
 
             elif mode_str == "CHANGE PIN":
@@ -443,7 +446,7 @@ def acc_options(fname, acc_num, create_acc_func, login_acc_func,
                 clear()
                 print("Returning back to the HUB...\n")
                 bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                         bank_hub_func)
+                         bank_hub_func, acc_recovery_func, acc_detail_func)
 
 
 def check_acc_currency(acc_num):
@@ -536,7 +539,7 @@ def currency_converter(requested_convert, acc_num):
 
 
 def currency_convert_menu(fname, acc_num, create_acc_func, login_acc_func,
-                          bank_hub_func):
+                          bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     Currency Convert Menu. Wrapped in a While True loop. Prompts users with a
     user input accepting 3 options.
@@ -570,7 +573,7 @@ def currency_convert_menu(fname, acc_num, create_acc_func, login_acc_func,
                 clear()
                 print(Fore.GREEN + "Returning to HUB...\n")
                 bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                         bank_hub_func)
+                         bank_hub_func, acc_recovery_func, acc_detail_func)
 
             elif mode_str == "LIST":
                 print(Fore.YELLOW + "\nThis is the list of currency currently"
@@ -596,7 +599,7 @@ def currency_convert_menu(fname, acc_num, create_acc_func, login_acc_func,
 
 
 def bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-             bank_hub_func):
+             bank_hub_func, acc_recovery_func, acc_detail_func):
     """
     The Main HUB Terminal. Prompts users to enter where
     they wish to go. Calls the Validate Mode function to
@@ -634,66 +637,40 @@ def bank_hub(fname, acc_num, create_acc_func, login_acc_func,
                 clear()
                 print("Going to the Deposit terminal...\n")
                 acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
-                            bank_hub_func)
+                            bank_hub_func, acc_recovery_func, acc_detail_func)
 
             elif mode_str == "WITHDRAW":
                 clear()
                 print("Going to the Withdraw terminal...\n")
                 acc_withdrawal(fname, acc_num, create_acc_func, login_acc_func,
-                               bank_hub_func)
+                               bank_hub_func, acc_recovery_func,
+                               acc_detail_func)
 
             elif mode_str == "BALANCE":
                 clear()
                 print(Fore.CYAN + f"Hello {fname} see below for your balance:")
                 login_user_bal(acc_num)
                 bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-                         bank_hub_func)
+                         bank_hub_func, acc_recovery_func, acc_detail_func)
 
             elif mode_str == "CONVERSION":
                 clear()
                 print("Going to the Conversion terminal...\n")
                 currency_convert_menu(fname, acc_num, create_acc_func,
-                                      login_acc_func, bank_hub_func)
+                                      login_acc_func, bank_hub_func,
+                                      acc_recovery_func, acc_detail_func)
 
             elif mode_str == "MORE OPTIONS":
                 clear()
                 print("Loading More Options...")
                 acc_options(fname, acc_num, create_acc_func, login_acc_func,
-                            bank_hub_func)
+                            bank_hub_func, acc_recovery_func, acc_detail_func)
 
             elif mode_str == "LOG OUT":
                 clear()
                 acc_logout_confirm(fname, acc_num, create_acc_func,
-                                   login_acc_func, bank_hub_func)
-
-
-def forgot_acc_recovery():
-    """
-    This function is called by 'acc_recovery_questions' and
-    'acc_recovery'. Prints statements to terminal.
-    Prompts the user to Enter 'RETURN' utilizing the 'validate_mode'
-    function.
-
-    - If user input is True, 'start_menu' function is called.
-    """
-    print(Fore.RED + "We're Sorry but without your backup information we"
-                     " cannot help you in the Account Recovery Terminal.\n")
-    print(Fore.CYAN + "Please Contact Customer Support at"
-                      " marcusf.dev@gmail.com\n")
-
-    print(Style.RESET_ALL + "When you're ready please Enter 'RETURN' to"
-                            " return to the Main Menu.")
-
-    valid_mode_input = ["RETURN"]
-    while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-
-        # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "RETURN":
-                clear()
-                print(Fore.GREEN + "Returning to the Main menu...\n")
-                start_menu()
+                                   login_acc_func, bank_hub_func,
+                                   acc_recovery_func, acc_detail_func)
 
 
 def all_acc_detail(backup_acc_num):
@@ -726,153 +703,8 @@ def all_acc_detail(backup_acc_num):
             return
 
 
-def acc_recovery_questions():
-    """
-    Account Recovery Backup Questions. When called the user is prompt with
-    questions. Uses 'validate_email' to obtain a correct email format.
-    Calls 'get_backup_data' function passing it user values.
-
-    - If that function returns True, this returns to the function call.
-    - If False, function code continues:
-
-    Prompts user with a question.
-
-    - If user input is 'RETRY' code wraps back to start of questions.
-    - If 'FORGOT' the 'forgot_acc_recovery' function is called.
-    """
-    while True:
-        print(Style.RESET_ALL + "What is your Country of Residence?\n")
-        user_location = input(Fore.GREEN + "Enter here:\n").upper()
-
-        print(Style.RESET_ALL + "What is your Email Address?")
-        print(Fore.RED + "Please take note of format Example:'example@email."
-                         "com'")
-
-        while True:
-            user_email = input(Fore.GREEN + "\nEnter here:\n")
-            if validate_email(user_email):
-                break
-            else:
-                print(Fore.RED + f"The Email {user_email} is not the correct"
-                                 " format. Please try again.")
-                continue
-
-        print(Style.RESET_ALL + "What is your Account Recovery password?\n")
-        print(Fore.RED + "Reminder: This was case sensitive!\n")
-        user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
-
-        clear()
-
-        if get_backup_data(user_location, user_email, user_recovery_pass):
-            return
-        else:
-            print(Fore.RED + "The details you have entered do not match"
-                             " the details recorded in our database.\n")
-            print(Fore.CYAN + "Are you sure you entered them correctly?\n")
-            print(Style.RESET_ALL + "Please Enter 'RETRY' to try again.")
-            print("Or Enter 'FORGOT' if you do not know these Recovery"
-                  " details.")
-
-            valid_mode_input = ["RETRY", "FORGOT"]
-            mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-
-            if validate_mode(mode_str, valid_mode_input):
-                if mode_str == "RETRY":
-                    clear()
-                    print(Fore.GREEN + "No problem. Loading Questions...\n")
-                    continue
-                elif mode_str == "FORGOT":
-                    clear()
-                    forgot_acc_recovery()
-
-
-def acc_recovery():
-    """
-    Account Recovery Terminal. Prompts users with an option to return
-    to the Main menu. Then prompts users with a question.
-
-    - If 'YES' while loop breaks. Function code proceeds.
-    - If 'NO' the 'forgot_acc_recovery' function is called.
-
-    Calls the 'acc_recovery_questions' function. Prints statements to
-    terminal and prompts users to enter 'PROCEED' using 'validate_mode'
-    function call. Once True, calls the 'start_menu' function.
-    """
-    print(Fore.YELLOW + "Welcome to Account Recovery.\n")
-    print(Style.RESET_ALL + "If you have lost your Account Number or Pin Code"
-          " please enter 'PROCEED'.")
-    print(Fore.RED + "To return to the Main Menu please Enter 'EXIT'.\n")
-
-    # Creates a list of expected strings for validate function
-    valid_mode_input = ["EXIT", "PROCEED"]
-
-    while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-        # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "EXIT":
-                clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Main Menu!")
-                print("Sending to Main Menu...\n")
-                start_menu()
-
-            elif mode_str == "PROCEED":
-                clear()
-                print(Fore.GREEN + f"You chose to {mode_str} to Account"
-                                   " Recovery!")
-                print("Sending to Account recovery...\n")
-
-                break
-
-    print(Fore.CYAN + "You're now at the Account Recovery Terminal.\n")
-    print(Fore.YELLOW + "Do you have your backup information with you?"
-                        " Example: Email, Country of Residence,"
-                        " Custom Password")
-
-    print(Style.RESET_ALL + "Please Enter 'YES' or 'NO' to continue.\n")
-
-    # Creates a list of expected strings for validate function
-    valid_mode_input = ["YES", "NO"]
-
-    while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-        # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "YES":
-                clear()
-                print(Fore.CYAN + "Great News we can continue to recover your"
-                                  " Eternity Holdings Account!")
-                print(Fore.GREEN + "Proceeding...\n")
-                break
-
-            elif mode_str == "NO":
-                clear()
-                forgot_acc_recovery()
-
-    acc_recovery_questions()
-
-    print(Fore.YELLOW + "\nWe reccomend changing your Custom Password reguarly"
-                        " for an extra layer of protection.")
-    print(Fore.RED + "If you believe your Account is at risk of being"
-                     " compromised, please Login & request a pin change.")
-    print("Otherwise contact support at: 'marcusf.dev@gmail.com'\n")
-
-    print(Style.RESET_ALL + "When you're ready please Enter 'RETURN' to leave"
-                            " to the main menu.")
-    # Creates a list of expected strings for validate function
-    valid_mode_input = ["RETURN"]
-
-    while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
-        # Calls Mode Validation to check for correct input string
-        if validate_mode(mode_str, valid_mode_input):
-            if mode_str == "RETURN":
-                clear()
-                print(Fore.GREEN + "Returning to Main Menu...\n")
-                start_menu()
-
-
-def start_menu(create_acc_func, login_acc_func, bank_hub_func):
+def start_menu(create_acc_func, login_acc_func, bank_hub_func,
+               acc_recovery_func, acc_detail_func):
     """
     Start Menu Terminal. Prompts users to enter where
     they wish to go. Calls the Validate Mode function to
@@ -904,25 +736,24 @@ def start_menu(create_acc_func, login_acc_func, bank_hub_func):
                 print(Fore.GREEN + f"You chose to {mode_str} an Account!")
                 print("Sending to Account Creator...\n")
                 create_acc_func(start_menu, create_acc_func, login_acc_func,
-                                bank_hub_func)
+                                bank_hub_func, acc_recovery_func,
+                                acc_detail_func)
 
             elif mode_str == "LOGIN":
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} to an Account!")
                 print("Sending to Account Login...\n")
-                # login_account()
                 login_acc_func(start_menu, create_acc_func, login_acc_func,
-                               bank_hub_func)
-                print(Fore.RED + "Feature not compatible with this version"
-                                 " of code. Ending Programme.")
+                               bank_hub_func, acc_recovery_func,
+                               acc_detail_func)
 
             elif mode_str == "RECOVER":
                 clear()
                 print(Fore.GREEN + f"You chose to {mode_str} your Account!")
                 print("Sending to Account Recovery...\n")
-                # acc_recovery()
-                print(Fore.RED + "Feature not compatible with this version"
-                                 " of code. Ending Programme.")
+                acc_recovery_func(start_menu, create_acc_func, login_acc_func,
+                                  bank_hub_func, acc_recovery_func,
+                                  acc_detail_func)
 
             break
 
@@ -932,7 +763,8 @@ def main():
     Run all program functions.
     """
     clear()
-    start_menu(create_account, login_account, bank_hub)
+    start_menu(create_account, login_account, bank_hub, acc_recovery,
+               all_acc_detail)
 
 
 if __name__ == "__main__":
