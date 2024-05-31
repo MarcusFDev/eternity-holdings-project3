@@ -37,9 +37,7 @@ Users have control over what currency they wish to use which converts their acco
 5. [Deployment](#deployment)
 
 
-6. [Credits and Contact](#credits-and-contact)
-   - [Credits](#credits)
-   - [Contact](#contact)
+6. [Contact](#contact)
 
 ---
 
@@ -118,9 +116,9 @@ Flowchart: A site called [Lucidchart](https://www.lucidchart.com) was used for t
 
 - [Github](https://github.com/MarcusFDev/eternity-holdings-project3)
     - Storing code remotely.
--[Gitpod](https://www.gitpod.io)
+- [Gitpod](https://www.gitpod.io)
     - IDE for project creation and development.
--[Heroku](https://eternity-holdings-89f8c99223c1.herokuapp.com)
+- [Heroku](https://eternity-holdings-89f8c99223c1.herokuapp.com)
     - Used for project deployment for a Python back-end project to be displayed on a front-end site.
 
 ## Other Tools
@@ -160,10 +158,6 @@ Flowchart: A site called [Lucidchart](https://www.lucidchart.com) was used for t
 
 # Deployment
 
-## Credits and Contact
-
-### Credits
-
-### Contact
+## Contact
 
 Please feel free to reach out if you have any questions. Contact me via my email at marcusf.dev@gmail.com
