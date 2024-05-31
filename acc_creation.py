@@ -8,7 +8,8 @@ and Account create backup & also including:
 """
 
 from utils import (clear, validate_mode, validate_email, get_sheet_data,
-                   update_sheet_data, update_backup_data, acc_pin_generator)
+                   update_sheet_data, update_backup_data, acc_pin_generator,
+                   validate_input)
 from colorama import Fore, Style
 import datetime
 import random
@@ -58,9 +59,10 @@ def create_account(start_menu_func,
     print(Fore.YELLOW + "Welcome to Account Creator.\n")
     print(Fore.CYAN + "You're now at the Account Creation Terminal.\n")
 
-    first_name = input(Style.RESET_ALL + "Please Enter First Name:\n").upper()
+    first_name = validate_input(Style.RESET_ALL + "Please Enter First Name:\n"
+                                ).upper()
 
-    last_name = input("Please Enter Last Name:\n").upper()
+    last_name = validate_input("Please Enter Last Name:\n").upper()
 
     print(Fore.RED + "NOTICE: You must be 18+ to Create an Account\n")
 
@@ -281,7 +283,7 @@ def create_backup_setup(acc_num):
     print(Fore.YELLOW + "Account Recovery Backup process has begun...\n")
 
     print(Style.RESET_ALL + "What is your Country of Residence?\n")
-    user_location = input(Fore.GREEN + "Enter here:\n").upper()
+    user_location = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
     print(Style.RESET_ALL + "What is your Email Address?")
     print(Fore.RED + "Please take note of format Example:"
@@ -300,7 +302,7 @@ def create_backup_setup(acc_num):
                             " whatever you want. We reccomend it is something"
                             " you will remember and is unique to you.\n")
     print(Fore.CYAN + "Watch out as it will be case sensitive!\n")
-    user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+    user_recovery_pass = validate_input(Fore.GREEN + "Enter here:\n")
 
     clear()
     create_backup_confirm(acc_num, user_location, user_email,

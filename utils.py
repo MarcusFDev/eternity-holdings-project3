@@ -11,7 +11,7 @@ Contains utility functions commonly reused across many files:
 import os
 import re
 import random
-from colorama import init, Fore
+from colorama import init, Fore, Style
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -71,6 +71,20 @@ def validate_email(email):
         return True
     else:
         return False
+
+
+def validate_input(user_prompt):
+    """
+    Prints message and checks that the user input is not empty.
+    Repeats until a non-empty user input has been entered.
+    """
+    while True:
+        user_input = input(user_prompt).upper()
+        if user_input:
+            return user_input
+        else:
+            print(Fore.RED + "This Input cannot be empty. Please try again.\n"
+                  + Style.RESET_ALL)
 
 
 def update_sheet_data(first_name,

@@ -7,7 +7,8 @@ locate lost details.
 -Function that provides users with advice if backup data
  is lost.
 """
-from utils import (clear, validate_mode, validate_email, get_backup_data)
+from utils import (clear, validate_mode, validate_email, get_backup_data,
+                   validate_input)
 from colorama import Fore, Style
 
 
@@ -128,14 +129,14 @@ def acc_recovery_questions(start_menu,
     """
     while True:
         print(Style.RESET_ALL + "What is your Country of Residence?\n")
-        user_location = input(Fore.GREEN + "Enter here:\n").upper()
+        user_location = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         print(Style.RESET_ALL + "What is your Email Address?")
         print(Fore.RED + "Please take note of format Example:'example@email."
                          "com'")
 
         while True:
-            user_email = input(Fore.GREEN + "\nEnter here:\n")
+            user_email = validate_input(Fore.GREEN + "\nEnter here:\n")
             if validate_email(user_email):
                 break
             else:
@@ -145,7 +146,7 @@ def acc_recovery_questions(start_menu,
 
         print(Style.RESET_ALL + "What is your Account Recovery password?\n")
         print(Fore.RED + "Reminder: This was case sensitive!\n")
-        user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
+        user_recovery_pass = validate_input(Fore.GREEN + "Enter here:\n")
 
         clear()
 

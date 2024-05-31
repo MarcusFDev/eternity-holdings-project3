@@ -7,7 +7,7 @@ Contains functions relating to user login.
  returning a result.
 """
 
-from utils import clear, validate_mode
+from utils import clear, validate_mode, validate_input
 from colorama import Fore, Style
 
 import gspread
@@ -72,16 +72,16 @@ def login_account(start_menu_func,
         print(Fore.RED + "Note: Names are not case sensitive.\n")
         # Assigns a variable to each user input
         print(Style.RESET_ALL + "What is your First Name?")
-        fname = input(Fore.GREEN + "Enter here:\n").upper()
+        fname = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         print(Style.RESET_ALL + "\nWhat is your Last Name?")
-        lname = input(Fore.GREEN + "Enter here:\n").upper()
+        lname = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         print(Style.RESET_ALL + "\nWhat is your Account Number?")
-        acc_num = input(Fore.GREEN + "Enter here:\n").upper()
+        acc_num = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         print(Style.RESET_ALL + "\nWhat is your Account Pin Number?")
-        pin_num = input(Fore.GREEN + "Enter here:\n").upper()
+        pin_num = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         # Calls function and gives it the input values
         if login_acc_checker(fname, lname, acc_num, pin_num):

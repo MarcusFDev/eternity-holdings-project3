@@ -7,13 +7,12 @@ Acts as a central point for importing all function files & including:
 -Establishes dictionary of currency names & rates.
 -Contains all banking functions.
 -Account Log Out Function.
--Allows users to Deposit & Withdraw funds into their account.
 """
 from acc_recovery import acc_recovery
 from acc_login import login_account
 from acc_creation import create_account, create_backup_setup
 from utils import (clear, validate_mode, get_sheet_data,
-                   acc_pin_generator)
+                   acc_pin_generator, validate_input)
 from colorama import init, Fore, Style
 import pprint
 from money import Money
@@ -106,7 +105,7 @@ def start_menu(create_acc_func,
     valid_mode_input = ["CREATE", "LOGIN", "RECOVER"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
         # Calls Mode Validation to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "CREATE":
@@ -223,7 +222,7 @@ def bank_hub(fname,
                         "CONVERSION", "LOG OUT"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "DEPOSIT":
@@ -296,7 +295,7 @@ def acc_deposit(fname,
         print("Please Enter how much you wish to deposit below:")
         print(Fore.RED + "\nReminder to use the correct format. Example:"
                          " 2, 13.15, etc")
-        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter Here:\n").upper()
 
         if mode_str == "EXIT":
             clear()
@@ -349,7 +348,7 @@ def acc_withdrawal(fname,
         print("Please Enter how much you wish to withdraw below:")
         print(Fore.RED + "\nReminder to use the correct format. Example:"
                          " 2, 13.15, etc")
-        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter Here:\n").upper()
 
         if mode_str == "EXIT":
             clear()
@@ -493,7 +492,7 @@ def currency_convert_menu(fname,
         print(Style.RESET_ALL + "To return to the HUB please Enter 'EXIT'"
                                 ".\n")
         while True:
-            mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+            mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
             if mode_str == "EXIT":
                 clear()
@@ -631,13 +630,13 @@ def acc_options(fname,
       called.
     - If 'RETURN' is detected, 'logged_in_hub' function is called.
     """
-    clear()
     backup_acc_num = acc_num
-
+    clear()
     # Creates a list of expected strings for validate function
     valid_mode_input = ["RECOVERY", "CHANGE PIN", "RETURN"]
 
     while True:
+
         print(Fore.YELLOW + f"Welcome {fname} here are More Options to choose"
                             " from.")
         print(Fore.CYAN + "Please Enter one of the following:\n")
@@ -649,7 +648,8 @@ def acc_options(fname,
         print("Enter 'CHANGE PIN' to request a account pin number change.")
 
         print("Enter 'RETURN' to go back to the Main HUB Terminal.\n")
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
 
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "RECOVERY":
@@ -692,7 +692,7 @@ def acc_change_pin(acc_num):
     valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
         # Calls Mode Validation to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
@@ -725,7 +725,7 @@ def acc_change_pin(acc_num):
     valid_mode_input = ["EXIT"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "EXIT":
@@ -783,7 +783,7 @@ def acc_logout_confirm(fname,
     valid_mode_input = ["YES", "NO"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "YES":
