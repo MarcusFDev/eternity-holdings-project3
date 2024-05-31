@@ -302,7 +302,7 @@ def create_backup_setup(acc_num):
                             " whatever you want. We reccomend it is something"
                             " you will remember and is unique to you.\n")
     print(Fore.CYAN + "Watch out as it will be case sensitive!\n")
-    user_recovery_pass = validate_input(Fore.GREEN + "Enter here:\n")
+    user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
 
     clear()
     create_backup_confirm(acc_num, user_location, user_email,

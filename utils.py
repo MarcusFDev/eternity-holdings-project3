@@ -170,8 +170,8 @@ def get_backup_data(user_location,
     Otherwise targets data from rows 7-9. Converts the passed
     user inputs into strings and compares the data from the sheet.
 
-    When match is found grabs the asscoiated account number and calls
-    'all_acc_detail' function passings it the account number.
+    When match is found grabs the associated account number and calls
+    'acc_detail_func' function passing it the account number.
     """
     print(Fore.GREEN + "Obtaining Account Backup data...")
 
@@ -185,24 +185,24 @@ def get_backup_data(user_location,
     for row in all_rows[1:end_index]:
         # Check if any cell in the row is empty.
         if any(cell == '' for cell in row):
-            print(Fore.RED + "Data does not match any Account found.")
-            return False
+            print(Fore.RED + "Empty cell found in row, skipping row.")
+            continue
 
         # Handle the row as a whole list
         sheet_user_location = row[6] if len(row) > 6 else ''
         sheet_user_email = row[7] if len(row) > 7 else ''
         sheet_user_recovery_pass = row[8] if len(row) > 8 else ''
-
         backup_acc_num = row[2] if len(row) > 2 else ''
 
         # Converts the passed data values to strings.
         # Checks if all the user input matches the data in the sheet.
         if (
-            str(user_location) == sheet_user_location and
-            str(user_email) == sheet_user_email and
-            str(user_recovery_pass) == sheet_user_recovery_pass
+            str(user_location).strip() == sheet_user_location.strip() and
+            str(user_email).strip().lower() == sheet_user_email.strip().lower()
+            and
+            str(user_recovery_pass).strip() == sheet_user_recovery_pass.strip()
         ):
-            print("Account Found.")
+            print(Fore.GREEN + "Account Found.")
             acc_detail_func(backup_acc_num)
             return True
 

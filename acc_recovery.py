@@ -146,7 +146,7 @@ def acc_recovery_questions(start_menu,
 
         print(Style.RESET_ALL + "What is your Account Recovery password?\n")
         print(Fore.RED + "Reminder: This was case sensitive!\n")
-        user_recovery_pass = validate_input(Fore.GREEN + "Enter here:\n")
+        user_recovery_pass = input(Fore.GREEN + "Enter here:\n")
 
         clear()
 
