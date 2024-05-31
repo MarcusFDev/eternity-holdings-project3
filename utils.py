@@ -76,15 +76,19 @@ def validate_email(email):
 def validate_input(user_prompt):
     """
     Prints message and checks that the user input is not empty.
-    Repeats until a non-empty user input has been entered.
+    Also checks that the user input does not contain special characters.
     """
+    pattern = r'[!@#$%^&*()_+{}|:"<>?`\-=[\];\',./]'
     while True:
         user_input = input(user_prompt).upper()
-        if user_input:
-            return user_input
-        else:
-            print(Fore.RED + "This Input cannot be empty. Please try again.\n"
+        if user_input.strip() == "":
+            print(Fore.RED + "The Input cannot be empty. Please try again.\n"
                   + Style.RESET_ALL)
+        elif re.search(pattern, user_input):
+            print(Fore.RED + "The Input cannot contain special characters."
+                             " Please try again.\n" + Style.RESET_ALL)
+        else:
+            return user_input
 
 
 def update_sheet_data(first_name,
