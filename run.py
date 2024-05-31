@@ -295,7 +295,7 @@ def acc_deposit(fname,
         print("Please Enter how much you wish to deposit below:")
         print(Fore.RED + "\nReminder to use the correct format. Example:"
                          " 2, 13.15, etc")
-        mode_str = validate_input(Fore.GREEN + "Enter Here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
 
         if mode_str == "EXIT":
             clear()
@@ -313,9 +313,8 @@ def acc_deposit(fname,
 
         except ValueError:
             clear()
-            print(Fore.RED + f"The Input of {mode_str} is"
-                             " incorrect. Remember to use the correct"
-                             " format!\n")
+            print(Fore.RED + "That Input is incorrectly formatted."
+                             "Remember to use the correct format!\n")
 
 
 def acc_withdrawal(fname,
@@ -348,7 +347,7 @@ def acc_withdrawal(fname,
         print("Please Enter how much you wish to withdraw below:")
         print(Fore.RED + "\nReminder to use the correct format. Example:"
                          " 2, 13.15, etc")
-        mode_str = validate_input(Fore.GREEN + "Enter Here:\n").upper()
+        mode_str = input(Fore.GREEN + "Enter Here:\n").upper()
 
         if mode_str == "EXIT":
             clear()
@@ -366,8 +365,8 @@ def acc_withdrawal(fname,
 
         except ValueError:
             clear()
-            print(Fore.RED + f"The Input of {mode_str} is incorrect. Remember"
-                             " to use the correct format!")
+            print(Fore.RED + "That Input is incorrectly formatted."
+                             "Remember to use the correct format!\n")
 
 
 def update_acc_bal(user_amount, acc_num, currency, add=True):
