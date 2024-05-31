@@ -1,5 +1,10 @@
 """
-Login Functions
+Account Login Functions file.
+Contains functions relating to user login.
+
+-Function that prompts the user to enter their details.
+-Function that checks those details with the database
+ returning a result.
 """
 
 from utils import clear, validate_mode
@@ -22,8 +27,12 @@ SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 ACCOUNTLIST = SHEET.worksheet('accountlist')
 
 
-def login_account(start_menu_func, create_acc_func, login_acc_func,
-                  bank_hub_func, acc_recovery_func, acc_detail_func):
+def login_account(start_menu_func,
+                  create_acc_func,
+                  login_acc_func,
+                  bank_hub_func,
+                  acc_recovery_func,
+                  acc_detail_func):
     """
     Login Account Terminal. Prompts users with an option to return
     to the Main menu. Collects User input for their Account.

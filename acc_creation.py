@@ -1,5 +1,10 @@
 """
-Account Creation Functions.
+Account Creation Functions file.
+Contains main functions that handle Account creation
+and Account create backup & also including:
+
+-A function to validate email address.
+-A function that generates a random 9 digit account number.
 """
 
 from utils import (clear, validate_mode, validate_email, get_sheet_data,
@@ -10,8 +15,12 @@ import random
 from money import Money
 
 
-def create_account(start_menu_func, create_acc_func, login_acc_func,
-                   bank_hub_func, acc_recovery_func, acc_detail_func):
+def create_account(start_menu_func,
+                   create_acc_func,
+                   login_acc_func,
+                   bank_hub_func,
+                   acc_recovery_func,
+                   acc_detail_func):
     """
     Create Account Terminal. Prompts users with an option to return
     to the Main menu. Collects DOB, First and Last Name data from user input.
@@ -74,8 +83,13 @@ def create_account(start_menu_func, create_acc_func, login_acc_func,
     return start_menu_func(create_acc_func, login_acc_func, bank_hub_func)
 
 
-def validate_dob(date_of_birth, first_name, start_menu_func, create_acc_func,
-                 login_acc_func, bank_hub_func, acc_recovery_func,
+def validate_dob(date_of_birth,
+                 first_name,
+                 start_menu_func,
+                 create_acc_func,
+                 login_acc_func,
+                 bank_hub_func,
+                 acc_recovery_func,
                  acc_detail_func):
     """
     Validates user input for date.
@@ -113,9 +127,15 @@ def validate_dob(date_of_birth, first_name, start_menu_func, create_acc_func,
         return False
 
 
-def acc_create_confirm(first_name, last_name, date_of_birth, start_menu_func,
-                       create_acc_func, login_acc_func, bank_hub_func,
-                       acc_recovery_func, acc_detail_func):
+def acc_create_confirm(first_name,
+                       last_name,
+                       date_of_birth,
+                       start_menu_func,
+                       create_acc_func,
+                       login_acc_func,
+                       bank_hub_func,
+                       acc_recovery_func,
+                       acc_detail_func):
     """
     Account Detail confirmation.
     Prints the user inputs to the terminal & prompts the user to
@@ -329,8 +349,12 @@ def create_backup_confirm(acc_num,
                 break
 
 
-def acc_create_finished(start_menu_func, create_acc_func, login_acc_func,
-                        bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_create_finished(start_menu_func,
+                        create_acc_func,
+                        login_acc_func,
+                        bank_hub_func,
+                        acc_recovery_func,
+                        acc_detail_func):
     """
     Account Creation Confirmed message.
     When called, prompts the user to input 'PROCEED' and

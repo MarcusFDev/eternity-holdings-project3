@@ -1,5 +1,11 @@
 """
-Utility Functions
+Utility Functions file.
+Contains utility functions commonly reused across many files:
+
+-Clear function for terminal readability.
+-Validate functions to check user inputs.
+-Functions to check & update the database.
+-Account 4 digit Pin generator function.
 """
 
 import os
@@ -138,7 +144,9 @@ def update_backup_data(acc_num, user_location, user_email, user_recovery_pass):
     return
 
 
-def get_backup_data(user_location, user_email, user_recovery_pass,
+def get_backup_data(user_location,
+                    user_email,
+                    user_recovery_pass,
                     acc_detail_func):
     """
     Obtain Google Sheet data for Backup Recovery.

@@ -1,11 +1,12 @@
 """
-This is the Eternity Holdings functionality file, run.py.
-Contains but not limited to functions that:
+This is the Eternity Holdings main file, run.py.
+Acts as a central point for importing all function files & including:
 
--Allows Users to Create a account.
+-Program Start Menu function.
 -Accesses and can edit Google Sheets as a database.
--Allows Users to Login to an account they created.
--Users can Log Out of an account.
+-Establishes dictionary of currency names & rates.
+-Contains all banking functions.
+-Account Log Out Function.
 -Allows users to Deposit & Withdraw funds into their account.
 """
 from acc_recovery import acc_recovery
@@ -77,8 +78,11 @@ def main():
                all_acc_detail)
 
 
-def start_menu(create_acc_func, login_acc_func, bank_hub_func,
-               acc_recovery_func, acc_detail_func):
+def start_menu(create_acc_func,
+               login_acc_func,
+               bank_hub_func,
+               acc_recovery_func,
+               acc_detail_func):
     """
     Start Menu Terminal. Prompts users to enter where
     they wish to go. Calls the Validate Mode function to
@@ -182,8 +186,13 @@ def get_backup_data(user_location, user_email, user_recovery_pass):
     return False
 
 
-def bank_hub(fname, acc_num, create_acc_func, login_acc_func,
-             bank_hub_func, acc_recovery_func, acc_detail_func):
+def bank_hub(fname,
+             acc_num,
+             create_acc_func,
+             login_acc_func,
+             bank_hub_func,
+             acc_recovery_func,
+             acc_detail_func):
     """
     The Main HUB Terminal. Prompts users to enter where
     they wish to go. Calls the Validate Mode function to
@@ -257,8 +266,13 @@ def bank_hub(fname, acc_num, create_acc_func, login_acc_func,
                                    acc_recovery_func, acc_detail_func)
 
 
-def acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
-                bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_deposit(fname,
+                acc_num,
+                create_acc_func,
+                login_acc_func,
+                bank_hub_func,
+                acc_recovery_func,
+                acc_detail_func):
     """
     Account Deposit Terminal. Prompts user to input
     'EXIT' or a numerical value to deposit to their account.
@@ -305,8 +319,13 @@ def acc_deposit(fname, acc_num, create_acc_func, login_acc_func,
                              " format!\n")
 
 
-def acc_withdrawal(fname, acc_num, create_acc_func, login_acc_func,
-                   bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_withdrawal(fname,
+                   acc_num,
+                   create_acc_func,
+                   login_acc_func,
+                   bank_hub_func,
+                   acc_recovery_func,
+                   acc_detail_func):
     """
     Account Withdraw Terminal. Prompts user to input
     'EXIT' or a numerical value to withdraw from their account.
@@ -440,8 +459,13 @@ def login_user_bal(acc_num):
     print(Fore.YELLOW + f"Your Account Balance is: {current_acc_bal}.\n")
 
 
-def currency_convert_menu(fname, acc_num, create_acc_func, login_acc_func,
-                          bank_hub_func, acc_recovery_func, acc_detail_func):
+def currency_convert_menu(fname,
+                          acc_num,
+                          create_acc_func,
+                          login_acc_func,
+                          bank_hub_func,
+                          acc_recovery_func,
+                          acc_detail_func):
     """
     Currency Convert Menu. Wrapped in a While True loop. Prompts users with a
     user input accepting 3 options.
@@ -589,8 +613,13 @@ def currency_converter(requested_convert, acc_num):
         return
 
 
-def acc_options(fname, acc_num, create_acc_func, login_acc_func,
-                bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_options(fname,
+                acc_num,
+                create_acc_func,
+                login_acc_func,
+                bank_hub_func,
+                acc_recovery_func,
+                acc_detail_func):
     """
     Account More Options terminal.
     Prints statements to the terminal and prompts the user to input
@@ -735,8 +764,13 @@ def all_acc_detail(backup_acc_num):
             return
 
 
-def acc_logout_confirm(fname, acc_num, create_acc_func, login_acc_func,
-                       bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_logout_confirm(fname,
+                       acc_num,
+                       create_acc_func,
+                       login_acc_func,
+                       bank_hub_func,
+                       acc_recovery_func,
+                       acc_detail_func):
     """
     Log Out Confirmation. Prompts users to input 'YES' or 'NO'.
     uses the Validate Mode function to check user input.

@@ -1,12 +1,22 @@
 """
-Account Recovery
+Account Recovery Function file.
+Contains functions relating to account recovery to
+locate lost details.
+
+-Funtion that prompts users with backup questions.
+-Function that provides users with advice if backup data
+ is lost.
 """
 from utils import (clear, validate_mode, validate_email, get_backup_data)
 from colorama import Fore, Style
 
 
-def acc_recovery(start_menu, create_acc_func, login_acc_func,
-                 bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_recovery(start_menu,
+                 create_acc_func,
+                 login_acc_func,
+                 bank_hub_func,
+                 acc_recovery_func,
+                 acc_detail_func):
     """
     Account Recovery Terminal. Prompts users with an option to return
     to the Main menu. Then prompts users with a question.
@@ -97,8 +107,12 @@ def acc_recovery(start_menu, create_acc_func, login_acc_func,
                            acc_recovery_func, acc_detail_func)
 
 
-def acc_recovery_questions(start_menu, create_acc_func, login_acc_func,
-                           bank_hub_func, acc_recovery_func, acc_detail_func):
+def acc_recovery_questions(start_menu,
+                           create_acc_func,
+                           login_acc_func,
+                           bank_hub_func,
+                           acc_recovery_func,
+                           acc_detail_func):
     """
     Account Recovery Backup Questions. When called the user is prompt with
     questions. Uses 'validate_email' to obtain a correct email format.
@@ -161,8 +175,12 @@ def acc_recovery_questions(start_menu, create_acc_func, login_acc_func,
                                         acc_recovery_func, acc_detail_func)
 
 
-def forgot_acc_recovery(start_menu, create_acc_func, login_acc_func,
-                        bank_hub_func, acc_recovery_func, acc_detail_func):
+def forgot_acc_recovery(start_menu,
+                        create_acc_func,
+                        login_acc_func,
+                        bank_hub_func,
+                        acc_recovery_func,
+                        acc_detail_func):
     """
     This function is called by 'acc_recovery_questions' and
     'acc_recovery'. Prints statements to terminal.
