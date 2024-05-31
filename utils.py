@@ -11,7 +11,7 @@ Contains utility functions commonly reused across many files:
 import os
 import re
 import random
-from colorama import init, Fore, Style
+from colorama import Fore, Style
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -28,9 +28,6 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('Eternity Holdings')
 
 ACCOUNTLIST = SHEET.worksheet('accountlist')
-
-# Initialize Colorama to work with ANSI escape sequences.
-init()
 
 
 def clear():
