@@ -2,14 +2,16 @@
 
 [Eternity Holdings](https://eternity-holdings-89f8c99223c1.herokuapp.com) has been designed as a mock prototype for a banking system. It's goal is to provide users with a virtual secure way to hold their money.
 
-The Eternity Holdings prototype allows users to create an account & login to that account. The ability to check their Account balance, deposit funds up to 100,000 Euro into their account and also withdraw those funds as well. 
-Users have control over what currency they wish to use which converts their account funds automatically. Users also are given a way to establish a Account recovery backup should they lose their account pin or number. Alongside the ability to change those details & Account pin as well should they wish to.
+The Eternity Holdings prototype features a account creation & login system. A complete functional Deposit, Withdrawal and Currency Change system and Account Recovery features.
+
+The project is a entirely back-end Python program. Heroku was introduced to test the program in a front-end environment. Click this [link](https://eternity-holdings-89f8c99223c1.herokuapp.com) to the Live version of Eternity Holdings.
 
 ---
 
 # Table of Contents
 
 1. [UX](#ux)
+
    - [Goals](#goals)
      - [Visitor Goals](#visitor-goals)
      - [Business Goals](#business-goals)
@@ -19,14 +21,31 @@ Users have control over what currency they wish to use which converts their acco
 
 2. [Features](#features)
 
+    - [Main Menu](#main-menu)
+        - [Account Creation](account-creation)
+        - [Account Login](#account-login)
+        - [Account Recovery](#account-recovery)
+    - [Bank Hub](#bank-hub)
+        - [Deposit & Withdawal](#deposit-&-withdrawal)
+        - [Currency Convertor](#currency-convertor)
+        - [Pin Change](#pin-change)
+    - [Feature Ideas](#feature-ideas)
+        - [Project Content](#project-content)
+        - [Project Design](#project-design)
 
-3. [Technology Used](#technology-used)
+3. [Project Notes](#creator-notes)
+
+    - [GitHub Commits](#github-commits)
+
+4. [Technology Used](#technology-used)
+
    - [Languages](#languages)
    - [Libraries](#libraries)
    - [Platforms](#platforms)
    - [Other Tools](#other-tools)
 
-4. [Testing](#testing)
+5. [Testing](#testing)
+
    - [Methods](#methods)
      - [Validation](#validation)
      - [General Testing](#general-testing)
@@ -34,14 +53,16 @@ Users have control over what currency they wish to use which converts their acco
      - [Known Bugs](#known-bugs)
      - [Fixed Bugs](#fixed-bugs)
 
-5. [Deployment](#deployment)
+6. [Deployment](#deployment)
+
     - [Github Deployment](#github-deployment)
         - [Github Preperation](#github-preparation)
         - [Github Instructions](#github-instructions)
         - [Google Sheets Instructions](#google-sheets-instructions)
 
 
-6. [Credits and Contact](#credits-and-contact)
+7. [Credits and Contact](#credits-and-contact)
+
     - [Credits](#credits)
     - [Contact](#contact)
 
