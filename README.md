@@ -18,6 +18,7 @@ The project is a entirely back-end Python program. Heroku was introduced to test
      - [User Stories](#user-stories)
    - [Visual Design](#visual-design)
      - [Flowcharts](#flowcharts)
+     - [Google Sheet](#google-sheet)
      - [Colorama](#colorama)
 
 2. [Features](#features)
@@ -120,6 +121,10 @@ The Business Goals for Eternity Holdings are:
 
 Flowchart: A site called [Lucidchart](https://www.lucidchart.com) was used for the creation of the Project [Flowchart](https://lucid.app/lucidchart/2b48ac3d-3655-40a7-b44b-4afc8a233830/edit?viewport_loc=-1124%2C-212%2C9052%2C4612%2C0_0&invitationId=inv_d450b472-ad4d-46f3-9de1-6875b6845fb1). It helped visualize and plan the direction the project needed to take. In Python projects it is crucial to maintain a clear plan and general process you want to take your code. As frameworks helps build the foundations and develop front-end systems such as Websites a flowchart is invaluable to back-end coding.
 
+### Google Sheet
+
+For the purpose of this project, a Google sheet was used as a database for all account details. Eternity Holdings interacts with the Google sheet often to add and update data. To view the Google sheet please follow this [link]( https://docs.google.com/spreadsheets/d/1ivq5-UThXv3ynS0U6XLn5EbKDd-Uz_1iM0zv7xx-28g/edit?usp=sharing).
+
 ### Colorama
 
 [Colorama](https://pypi.org/project/colorama/) is a Python library that was chosen to be used in Eternity Holdings. Once imported into the files and initiated by `init()`on line 37 in `run.py`lines of code could be colored to help improve the readability of text in the terminal.
@@ -164,6 +169,30 @@ Accounts in Eternity Holdings are intended to be unique. In this current version
 
 ![Account Creation complete](acc_create_complete.png)
 
+### Account Login
+
+Account Login functions are compiled in the `acc_login.py` file. This is the second major part of the banking system that goes hand in hand with with creating a account. Users are to expect to login to the account they created.
+
+The function `login_account` on line 30 in `acc_login.py` prompts users to enter Full Name, Account Number and Pin. The user inputs are checked using `login_acc_checker` on line 103 in the same file. As all accounts are stored in a project Google Sheet the function takes the data from the sheet and compares it with the details provided, if a match is found the user is logged into their account.
+
+![Account Login image](acc_login.png)
+
+### Account Recovery
+
+Account Recovery functions are compiled in the `acc_recovery.py` file. This was a feature implemented for users to recover their account if they lose their details. Users optionally have the ability to setup their recovery backup details when they create a account, and also a ability to do so upon logging in if they wish to change them.
+
+The `acc_recovery` function on line 15 acts a central function for this feature. It's purpose is to prompt users with basic direction and connects two associated functions together. If the User has their backup information, the `acc_recovery_questions` on line 111 will be called.
+
+![Account Recovery image](recoverymenu.png)
+
+The questions will be checked with the details saved on the Google sheet database. The `get_backuo_data` function on line 162 in the `utils.py` file is used. If a match is found, account details will be printed to the terminal.
+
+![Recovery Questions image](recoveryquest.png)
+
+If a user does not know their account recovery the `forgot_acc_recovery` function will be called. Users will be informed at this time there is no way to gain access to their account and need further customer support.
+
+![Forgot Recovery image](recoveryforgot.png)
+
 ## Feature Ideas
 
 ### Project Content
@@ -177,6 +206,18 @@ Accounts in Eternity Holdings are intended to be unique. In this current version
 ### Project Design
 
 - Restructure file functions and store bank functions in seperate file.
+- Reduce passed parameters to functions for better performance.
+
+---
+
+# Project Notes
+
+## Github Commits
+
+For Eternity Holdings, aome Github commits were larger than anticipated. The reason behind certain commits being very large was due to a major code restructure later in the project timeline. 
+
+This divided some large sections of code into different `.py` files for better code maintainability. A example of this being done can be found under the commit title 
+"Changed: Seperated Create/ultility Functions into files." Here is a [link](https://github.com/MarcusFDev/eternity-holdings-project3/commit/ef9f6e08878705c861a5c92d2e12ab4cb96a0031) to the commit.
 
 ---
 
