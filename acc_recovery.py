@@ -136,7 +136,7 @@ def acc_recovery_questions(start_menu,
                          "com'")
 
         while True:
-            user_email = validate_input(Fore.GREEN + "\nEnter here:\n")
+            user_email = input(Fore.GREEN + "\nEnter here:\n")
             if validate_email(user_email):
                 break
             else:
