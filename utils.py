@@ -186,7 +186,6 @@ def get_backup_data(user_location,
     for row in all_rows[1:end_index]:
         # Check if any cell in the row is empty.
         if any(cell == '' for cell in row):
-            print(Fore.RED + "Empty cell found in row, skipping row.")
             continue
 
         # Handle the row as a whole list

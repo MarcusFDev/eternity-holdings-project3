@@ -370,7 +370,7 @@ def acc_create_finished(start_menu_func,
     valid_mode_input = ["PROCEED"]
 
     while True:
-        mode_str = input(Fore.GREEN + "Enter here:\n").upper()
+        mode_str = validate_input(Fore.GREEN + "Enter here:\n").upper()
         # Calls validate_mode to check for correct input string
         if validate_mode(mode_str, valid_mode_input):
             if mode_str == "PROCEED":
